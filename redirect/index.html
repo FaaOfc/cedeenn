@@ -16,7 +16,6 @@
         text-align: center;
         padding-top: 120px;
     }
-
     .box {
         background: rgba(255, 255, 255, 0.08);
         padding: 30px;
@@ -26,7 +25,6 @@
         border-radius: 18px;
         border: 2px solid rgba(255, 255, 255, 0.15);
     }
-
     .btn {
         display: inline-block;
         background: rgba(255, 255, 255, 0.12);
@@ -38,7 +36,6 @@
         border: 2px solid rgba(255, 255, 255, 0.25);
         transition: 0.2s;
     }
-
     .btn:hover {
         background: rgba(255, 255, 255, 0.22);
         transform: scale(1.05);
@@ -46,12 +43,10 @@
 </style>
 
 <script>
-    // Ambil parameter dari URL
     const params = new URLSearchParams(window.location.search);
-    const targetURL = params.get("to") || "https://cdn.faanrky.my.id";  // default TikTok
-    let timer = Number(params.get("time")) || 10;                // default 10 detik
+    const targetURL = params.get("u") || "https://cdn.faanrky.my.id"; 
+    let timer = Number(params.get("t")) || 5;
 
-    // Pastikan waktu minimal 1 detik
     if (timer < 1) timer = 1;
 
     function countdown() {
