@@ -3,77 +3,91 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mengalihkan...</title>
+<title>Buat Link Redirect</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Bungee&display=swap" rel="stylesheet">
 
 <style>
     body {
-        margin: 0;
-        background: #000000;
+        margin: 0; background: #000;
         font-family: 'Bungee', sans-serif;
         color: #fff;
+        padding: 50px 20px;
         text-align: center;
-        padding-top: 120px;
     }
     .box {
-        background: rgba(255, 255, 255, 0.08);
-        padding: 30px;
+        background: rgba(255,255,255,0.08);
+        padding: 25px;
         width: 90%;
-        max-width: 420px;
+        max-width: 480px;
         margin: auto;
-        border-radius: 18px;
-        border: 2px solid rgba(255, 255, 255, 0.15);
+        border-radius: 15px;
+        border: 2px solid rgba(255,255,255,0.15);
+    }
+    input {
+        width: 90%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: none;
+        font-size: 16px;
     }
     .btn {
         display: inline-block;
-        background: rgba(255, 255, 255, 0.12);
-        padding: 14px 28px;
-        margin-top: 18px;
-        color: white;
-        text-decoration: none;
-        border-radius: 12px;
-        border: 2px solid rgba(255, 255, 255, 0.25);
+        background: rgba(255,255,255,0.15);
+        padding: 12px 22px;
+        margin-top: 12px;
+        color: #fff;
+        border-radius: 10px;
+        border: 2px solid rgba(255,255,255,0.25);
+        cursor: pointer;
         transition: 0.2s;
     }
     .btn:hover {
-        background: rgba(255, 255, 255, 0.22);
+        background: rgba(255,255,255,0.22);
         transform: scale(1.05);
+    }
+    #output {
+        margin-top: 20px;
+        word-break: break-all;
+        padding: 15px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 10px;
+        display: none;
     }
 </style>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const targetURL = params.get("u") || "https://cdn.faanrky.my.id"; 
-    let timer = Number(params.get("t")) || 5;
+function generateLink() {
+    const base = "https://arif-modol.faanrky.my.id/redirect.html";
+    const url = document.getElementById("url").value.trim();
+    const time = document.getElementById("time").value.trim();
 
-    if (timer < 1) timer = 1;
-
-    function countdown() {
-        document.getElementById("counter").textContent = timer;
-
-        if (timer <= 0) {
-            window.location.href = targetURL;
-        } else {
-            timer--;
-            setTimeout(countdown, 1000);
-        }
+    if (!url) {
+        alert("URL tidak boleh kosong!");
+        return;
     }
 
-    window.onload = () => {
-        document.getElementById("btn").href = targetURL;
-        countdown();
-    };
+    const finalLink = `${base}?u=${encodeURIComponent(url)}&t=${time || 10}`;
+
+    const output = document.getElementById("output");
+    output.style.display = "block";
+    output.textContent = finalLink;
+}
 </script>
 
 </head>
 <body>
 
 <div class="box">
-    <h2>Lanjutkan ke tujuan utama</h2>
-    <p>Anda akan dialihkan dalam <span id="counter"></span> detik</p>
+    <h2>Buat Link Redirect</h2>
 
-    <a id="btn" class="btn" href="#">Klik untuk lanjut sekarang</a>
+    <input id="url" type="text" placeholder="Masukkan URL tujuan">
+    <input id="time" type="number" placeholder="Waktu (detik) - default 10">
+
+    <div class="btn" onclick="generateLink()">Generate</div>
+
+    <div id="output"></div>
 </div>
 
 </body>
