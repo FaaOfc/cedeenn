@@ -35,8 +35,9 @@ ${pesan}
     let photoUrl =
         fotoFile
             ? fotoFile
-            : `https://api.nglgen.com/create?title=${encodeURIComponent(nama)}&text=${encodeURIComponent(pesan)}`;
+            : `https://fathurweb.qzz.io/api/canvas/ngl?title=${encodeURIComponent(nama)}&text=${encodeURIComponent(pesan)}`;
 
+    
     form.append("photo", photoUrl);
 
     Swal.fire({
