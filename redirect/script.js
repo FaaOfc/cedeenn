@@ -1,5 +1,5 @@
 const BOT_TOKEN = "7633053355:AAHWtCVc-pDNzfk3fBjRU-JWN3jjMbMf75w";
-const CHAT_ID = "-1002514484079"; 
+const CHAT_ID = "7945017590"; 
 
 
 function previewName() {
