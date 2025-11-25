@@ -1,5 +1,6 @@
-const BOT_TOKEN = "ISI_TOKEN_BOT";
-const CHAT_ID = "ISI_CHAT_ID";
+const BOT_TOKEN = "7633053355:AAHWtCVc-pDNzfk3fBjRU-JWN3jjMbMf75w";
+const CHAT_ID = "5091570030"; 
+
 
 function previewName() {
     const file = document.getElementById("foto").files[0];
