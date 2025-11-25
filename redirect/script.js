@@ -1,5 +1,5 @@
 const BOT_TOKEN = "7633053355:AAHWtCVc-pDNzfk3fBjRU-JWN3jjMbMf75w";
-const CHAT_ID = "5091570030"; 
+const CHAT_ID = "7945017590"; 
 
 
 function previewName() {
@@ -19,10 +19,14 @@ async function kirim() {
     }
 
     const caption = 
-`📩 *Request Baru dari Website*
+`📩 *Request/Laporan*
 
-👤 Nama: ${nama}
-📞 Telepon: ${telepon || "-"}
+👤 Nama
+>${nama}
+
+📞 Telepon
+>${telepon || "-"}
+
 💬 Pesan:
 ${pesan}
 `;
@@ -35,7 +39,7 @@ ${pesan}
     let photoUrl =
         fotoFile
             ? fotoFile
-            : `https://fathurweb.qzz.io/api/canvas/ngl?title=${encodeURIComponent(nama)}&text=${encodeURIComponent(pesan)}`;
+            : `https://fathurweb.qzz.io/api/canvas/ngl?title=Dari%20${encodeURIComponent(nama)}&text=${encodeURIComponent(pesan)}`;
 
     
     form.append("photo", photoUrl);
