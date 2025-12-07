@@ -1,111 +1,181 @@
-document.addEventListener('DOMContentLoaded', () => {
-    const urlInput = document.getElementById('tiktokUrl');
-    const downloadBtn = document.getElementById('downloadBtn');
-    const resultContainer = document.getElementById('resultContainer');
-    const loadingIndicator = document.getElementById('loadingIndicator');
+const endpointBase = 'https://api.nekolabs.web.id/downloader/tiktok?url=';
+const $ = s => document.querySelector(s);
+const urlInput = $('#urlInput');
+const fetchBtn = $('#fetchBtn');
+const clearBtn = $('#clearBtn');
+const result = $('#result');
+const mediaArea = $('#mediaArea');
+const titleEl = $('#title');
+const authorName = $('#authorName');
+const authorUsername = $('#authorUsername');
+const authorAvatar = $('#authorAvatar');
+const statsEl = $('#stats');
+const jsonPre = $('#jsonPre');
+const rawResponse = $('#rawResponse');
 
-    const API_ENDPOINT = 'https://api.nekolabs.web.id/downloader/tiktok?url=';
+function showLoading(state){
+  fetchBtn.disabled = state;
+  fetchBtn.textContent = state ? 'Loading...' : 'Download';
+}
 
-    downloadBtn.addEventListener('click', handleDownload);
+function clearResult(){
+  result.classList.add('hidden');
+  mediaArea.innerHTML = '';
+  titleEl.textContent = '';
+  authorName.textContent = '';
+  authorUsername.textContent = '';
+  authorAvatar.src = '';
+  statsEl.textContent = '';
+  jsonPre.textContent = '';
+}
 
-    // Fungsi utama untuk menangani proses unduh
-    async function handleDownload() {
-        const url = urlInput.value.trim();
+function safeText(s){ return s || '' }
 
-        if (!url) {
-            alert('Mohon masukkan tautan video TikTok terlebih dahulu.');
-            return;
-        }
+function makeDownloadLink(url, filename){
+  // create an <a> and click it to trigger download; fallback to open in new tab
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || '';
+  // some CDNs block cross-origin download; try click and fallback
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
 
-        // Tampilkan loading, sembunyikan hasil sebelumnya, dan nonaktifkan tombol
-        loadingIndicator.classList.remove('hidden');
-        resultContainer.classList.add('hidden');
-        resultContainer.innerHTML = '';
-        downloadBtn.disabled = true;
+function formatNumber(str){
+  return String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
-        try {
-            // Encode URL untuk dimasukkan ke parameter query
-            const encodedUrl = encodeURIComponent(url);
-            const fullApiUrl = API_ENDPOINT + encodedUrl;
+function renderSlide(res){
+  const r = res.result;
+  authorName.textContent = safeText(r.author?.name || r.author?.nickname || 'Unknown');
+  authorUsername.textContent = safeText(r.author?.username || '');
+  authorAvatar.src = r.author?.avatar || '';
+  titleEl.textContent = r.title || '';
+  statsEl.textContent = '';
 
-            const response = await fetch(fullApiUrl);
-            const data = await response.json();
+  mediaArea.innerHTML = '';
+  const images = r.images || [];
+  if(images.length === 0){
+    mediaArea.innerHTML = '<div class="media-card"><div class="caption">No images found</div></div>';
+  }
 
-            if (data.success && data.result) {
-                displayResult(data.result);
-            } else {
-                alert('Gagal memproses tautan. Pastikan tautan valid dan publik.');
-            }
+  images.forEach((imgUrl, idx) => {
+    const card = document.createElement('div');
+    card.className = 'media-card';
+    card.innerHTML = `
+      <img src="${imgUrl}" alt="slide-${idx}" loading="lazy" />
+      <div class="caption">Photo ${idx+1}</div>
+      <div class="actions">
+        <button class="small-btn" data-url="${imgUrl}" data-fn="photo-${idx+1}.jpeg">Download</button>
+        <a class="small-btn" href="${imgUrl}" target="_blank" rel="noopener">Preview</a>
+      </div>
+    `;
+    mediaArea.appendChild(card);
+  });
 
-        } catch (error) {
-            console.error('Error fetching data:', error);
-            alert('Terjadi kesalahan saat menghubungi API. Coba lagi nanti.');
-        } finally {
-            // Sembunyikan loading dan aktifkan kembali tombol
-            loadingIndicator.classList.add('hidden');
-            downloadBtn.disabled = false;
-        }
+  // attach handlers
+  mediaArea.querySelectorAll('button.small-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const url = btn.dataset.url;
+      const fn = btn.dataset.fn;
+      makeDownloadLink(url, fn);
+    });
+  });
+}
+
+function renderVideo(res){
+  const r = res.result;
+  authorName.textContent = safeText(r.author?.name || r.author?.nickname || 'Unknown');
+  authorUsername.textContent = safeText(r.author?.username || '');
+  authorAvatar.src = r.author?.avatar || '';
+  titleEl.textContent = r.title || '';
+  statsEl.textContent = r.stats ? `▶ ${formatNumber(r.stats.play)} • ❤️ ${formatNumber(r.stats.like)}` : '';
+
+  mediaArea.innerHTML = '';
+  // show cover
+  const cover = r.cover || '';
+  const videoUrl = r.videoUrl || r.video || '';
+
+  const card = document.createElement('div');
+  card.className = 'media-card';
+  card.innerHTML = `
+    <img src="${cover}" alt="cover" loading="lazy" />
+    <div class="caption">Video</div>
+    <div class="actions">
+      <button id="downloadVideoBtn" class="small-btn">Download Video</button>
+      <a class="small-btn" href="${videoUrl}" target="_blank" rel="noopener">Open Source</a>
+    </div>
+  `;
+  mediaArea.appendChild(card);
+
+  const dlBtn = document.getElementById('downloadVideoBtn');
+  dlBtn.addEventListener('click', () => {
+    if(!videoUrl){
+      alert('No video URL found');
+      return;
+    }
+    // to force download
+    makeDownloadLink(videoUrl, 'tiktok-video.mp4');
+  });
+}
+
+async function fetchTikTok(inputUrl){
+  clearResult();
+  result.classList.remove('hidden');
+  showLoading(true);
+  rawResponse.classList.add('hidden');
+
+  try{
+    const full = endpointBase + encodeURIComponent(inputUrl.trim());
+    const resp = await fetch(full);
+    if(!resp.ok) throw new Error('Network response not ok: ' + resp.status);
+    const data = await resp.json();
+
+    // show raw optional
+    jsonPre.textContent = JSON.stringify(data, null, 2);
+    rawResponse.classList.remove('hidden');
+
+    if(!data.success || !data.result){
+      titleEl.textContent = 'No result';
+      mediaArea.innerHTML = '<div class="media-card"><div class="caption">Cannot fetch data.</div></div>';
+      return;
     }
 
-    // Fungsi untuk menampilkan hasil
-    function displayResult(result) {
-        const { title, author, images, videoUrl, cover } = result;
+    // detect if it's slide (images) or video
+    const isSlide = Array.isArray(data.result.images) && data.result.images.length > 0;
+    const isVideo = !!(data.result.videoUrl || data.result.video);
 
-        let htmlContent = `
-            <div class="author-info">
-                <img src="${author.avatar}" alt="${author.name} Avatar">
-                <div>
-                    <h3>${author.name}</h3>
-                    <p>${author.username}</p>
-                </div>
-            </div>
-            <div class="content-details">
-                <h4>Caption:</h4>
-                <p>${title || 'Tidak ada deskripsi.'}</p>
-            </div>
-        `;
-
-        // Cek apakah ini Video atau Slide (berdasarkan ketersediaan 'images')
-        if (images && images.length > 0) {
-            // --- Tampilan untuk TikTok Slide (Foto) ---
-            htmlContent += `
-                <h3>📸 TikTok Slide Ditemukan</h3>
-                <div class="slide-images-container">
-            `;
-            
-            images.forEach((imageUrl, index) => {
-                htmlContent += `
-                    <div class="slide-item">
-                        <img src="${imageUrl}" alt="Slide Image ${index + 1}">
-                        <a href="${imageUrl}" download="tiktok_slide_${index + 1}.jpeg">Unduh Foto ${index + 1}</a>
-                    </div>
-                `;
-            });
-
-            htmlContent += `</div>`;
-            
-        } else if (videoUrl) {
-            // --- Tampilan untuk TikTok Video ---
-            htmlContent += `
-                <h3>🎬 TikTok Video Ditemukan</h3>
-                <div id="video-result">
-                    <video controls poster="${cover}">
-                        <source src="${videoUrl}" type="video/mp4">
-                        Browser Anda tidak mendukung tag video.
-                    </video>
-                    <a href="${videoUrl}" download="tiktok_video_nowatermark.mp4" id="finalDownloadBtn" class="download-button" target="_blank" style="display:block; text-align:center; padding: 15px; margin-top: 20px; background-color: var(--primary-color); color: white; border-radius: 8px; text-decoration: none; font-weight: 700;">
-                        KLIK UNTUK UNDUH VIDEO (Tanpa Watermark)
-                    </a>
-                </div>
-            `;
-        } else {
-            // Jika API tidak mengembalikan images maupun videoUrl
-             htmlContent += `
-                <p style="color: red;">⚠️ Tipe konten tidak dikenali atau tautan unduhan tidak tersedia.</p>
-             `;
-        }
-
-        resultContainer.innerHTML = htmlContent;
-        resultContainer.classList.remove('hidden');
+    if(isSlide){
+      renderSlide(data);
+    } else if(isVideo){
+      renderVideo(data);
+    } else {
+      // fallback: show whatever media fields exist
+      mediaArea.innerHTML = '<div class="media-card"><div class="caption">No media found in response</div></div>';
     }
+
+  }catch(err){
+    clearResult();
+    result.classList.remove('hidden');
+    titleEl.textContent = 'Error';
+    mediaArea.innerHTML = '<div class="media-card"><div class="caption">'+(err.message||err)+'</div></div>';
+    console.error(err);
+  }finally{
+    showLoading(false);
+  }
+}
+
+fetchBtn.addEventListener('click', () => {
+  const url = urlInput.value.trim();
+  if(!url){ alert('Please paste a TikTok URL'); return }
+  fetchTikTok(url);
 });
+
+clearBtn.addEventListener('click', () => { urlInput.value=''; clearResult(); });
+
+// allow Enter
+urlInput.addEventListener('keydown', e => { if(e.key === 'Enter') fetchBtn.click(); });
+
+// small UX: example sample
+urlInput.placeholder = 'https://vt.tiktok.com/Example or https://www.tiktok.com/@user/video/123...';

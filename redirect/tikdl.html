@@ -1,36 +1,308 @@
-<!DOCTYPE html>
-<html lang="id">
+# Files for TikTok Downloader
+
+Below are three files. Save each into your project folder with the exact filenames: `index.html`, `styles.css`, `script.js`.
+
+---
+
+## index.html
+
+```html
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader Tanpa Watermark</title>
-    <link rel="stylesheet" href="tikdl.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>TikTok Downloader</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <h1>⬇️ TikTok Downloader</h1>
-        <p>Unduh video dan slide TikTok tanpa watermark.</p>
+  <main class="container">
+    <header class="hero">
+      <h1>TikTok Downloader</h1>
+      <p class="subtitle">Paste TikTok link then press <strong>Download</strong></p>
     </header>
 
-    <main>
-        <section class="input-section">
-            <input type="url" id="tiktokUrl" placeholder="Tempel Tautan Video/Slide TikTok di sini...">
-            <button id="downloadBtn">Proses & Unduh</button>
-        </section>
+    <section class="input-area">
+      <input id="urlInput" type="text" placeholder="https://vt.tiktok.com/...?" />
+      <div class="controls">
+        <button id="fetchBtn" class="btn primary">Download</button>
+        <button id="clearBtn" class="btn">Clear</button>
+      </div>
+      <p class="note">Using endpoint: <code>https://api.nekolabs.web.id/downloader/tiktok?url=</code></p>
+    </section>
 
-        <div id="loadingIndicator" class="hidden">
-            Memproses...
+    <section id="result" class="result hidden">
+      <div class="meta">
+        <div class="author">
+          <img id="authorAvatar" class="avatar" src="" alt="avatar" />
+          <div>
+            <div id="authorName" class="author-name"></div>
+            <div id="authorUsername" class="author-username"></div>
+          </div>
         </div>
+        <div class="stats" id="stats"></div>
+      </div>
 
-        <section id="resultContainer" class="hidden">
-            </section>
-    </main>
+      <h2 id="title" class="title"></h2>
 
-    <footer>
-        <p>&copy; 2025 Simple TikTok Downloader. Powered by NekoLabs API.</p>
-    </footer>
+      <div id="mediaArea" class="media-area"></div>
 
-    <script src="tikdl.js"></script>
+      <div id="rawResponse" class="raw hidden">
+        <h3>Raw JSON</h3>
+        <pre id="jsonPre"></pre>
+      </div>
+    </section>
+
+    <footer class="footer">Dark theme • Accent color <span class="accent">red</span></footer>
+  </main>
+
+  <script src="script.js"></script>
 </body>
 </html>
+```
+
+---
+
+## styles.css
+
+```css
+:root{
+  --bg:#0b0b0c;
+  --panel:#0f1113;
+  --muted:#9aa0a6;
+  --accent:#e53b3b; /* red */
+  --card:#121416;
+  --glass: rgba(255,255,255,0.03);
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+body{background:linear-gradient(180deg,#050506 0%, #0c0c0d 100%);color:#e6e7e8}
+.container{max-width:920px;margin:32px auto;padding:20px}
+.hero{text-align:left;margin-bottom:18px}
+.hero h1{margin:0;font-size:28px}
+.subtitle{color:var(--muted);margin-top:6px}
+.input-area{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.input-area input[type=text]{width:100%;padding:12px 14px;background:var(--panel);border:1px solid #151617;border-radius:8px;color:#eee}
+.controls{display:flex;gap:8px}
+.btn{padding:10px 14px;border-radius:8px;background:transparent;border:1px solid #222;color:#eee;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#ff6b6b);border:none;color:#090909}
+.note{color:var(--muted);font-size:13px}
+.result{margin-top:18px;padding:16px;background:var(--card);border-radius:12px;border:1px solid #171819}
+.hidden{display:none}
+.meta{display:flex;justify-content:space-between;align-items:center}
+.author{display:flex;gap:12px;align-items:center}
+.avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.06)}
+.author-name{font-weight:600}
+.author-username{color:var(--muted);font-size:13px}
+.title{margin-top:12px}
+.media-area{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.media-card{background:var(--glass);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);width:calc(33% - 8px);min-width:160px}
+.media-card img{width:100%;height:160px;object-fit:cover;border-radius:8px}
+.media-card .caption{margin-top:8px;font-size:13px;color:var(--muted)}
+.media-card .actions{display:flex;gap:8px;margin-top:8px}
+.small-btn{padding:6px 8px;border-radius:8px;background:#111;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.stats{color:var(--muted);font-size:13px}
+.raw{margin-top:12px}
+.footer{margin-top:22px;color:var(--muted);font-size:13px}
+.accent{color:var(--accent);font-weight:700}
+@media (max-width:720px){.media-card{width:48%}}
+@media (max-width:420px){.media-card{width:100%}}
+```
+
+---
+
+## script.js
+
+```javascript
+const endpointBase = 'https://api.nekolabs.web.id/downloader/tiktok?url=';
+const $ = s => document.querySelector(s);
+const urlInput = $('#urlInput');
+const fetchBtn = $('#fetchBtn');
+const clearBtn = $('#clearBtn');
+const result = $('#result');
+const mediaArea = $('#mediaArea');
+const titleEl = $('#title');
+const authorName = $('#authorName');
+const authorUsername = $('#authorUsername');
+const authorAvatar = $('#authorAvatar');
+const statsEl = $('#stats');
+const jsonPre = $('#jsonPre');
+const rawResponse = $('#rawResponse');
+
+function showLoading(state){
+  fetchBtn.disabled = state;
+  fetchBtn.textContent = state ? 'Loading...' : 'Download';
+}
+
+function clearResult(){
+  result.classList.add('hidden');
+  mediaArea.innerHTML = '';
+  titleEl.textContent = '';
+  authorName.textContent = '';
+  authorUsername.textContent = '';
+  authorAvatar.src = '';
+  statsEl.textContent = '';
+  jsonPre.textContent = '';
+}
+
+function safeText(s){ return s || '' }
+
+function makeDownloadLink(url, filename){
+  // create an <a> and click it to trigger download; fallback to open in new tab
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename || '';
+  // some CDNs block cross-origin download; try click and fallback
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+function formatNumber(str){
+  return String(str).replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function renderSlide(res){
+  const r = res.result;
+  authorName.textContent = safeText(r.author?.name || r.author?.nickname || 'Unknown');
+  authorUsername.textContent = safeText(r.author?.username || '');
+  authorAvatar.src = r.author?.avatar || '';
+  titleEl.textContent = r.title || '';
+  statsEl.textContent = '';
+
+  mediaArea.innerHTML = '';
+  const images = r.images || [];
+  if(images.length === 0){
+    mediaArea.innerHTML = '<div class="media-card"><div class="caption">No images found</div></div>';
+  }
+
+  images.forEach((imgUrl, idx) => {
+    const card = document.createElement('div');
+    card.className = 'media-card';
+    card.innerHTML = `
+      <img src="${imgUrl}" alt="slide-${idx}" loading="lazy" />
+      <div class="caption">Photo ${idx+1}</div>
+      <div class="actions">
+        <button class="small-btn" data-url="${imgUrl}" data-fn="photo-${idx+1}.jpeg">Download</button>
+        <a class="small-btn" href="${imgUrl}" target="_blank" rel="noopener">Preview</a>
+      </div>
+    `;
+    mediaArea.appendChild(card);
+  });
+
+  // attach handlers
+  mediaArea.querySelectorAll('button.small-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      const url = btn.dataset.url;
+      const fn = btn.dataset.fn;
+      makeDownloadLink(url, fn);
+    });
+  });
+}
+
+function renderVideo(res){
+  const r = res.result;
+  authorName.textContent = safeText(r.author?.name || r.author?.nickname || 'Unknown');
+  authorUsername.textContent = safeText(r.author?.username || '');
+  authorAvatar.src = r.author?.avatar || '';
+  titleEl.textContent = r.title || '';
+  statsEl.textContent = r.stats ? `▶ ${formatNumber(r.stats.play)} • ❤️ ${formatNumber(r.stats.like)}` : '';
+
+  mediaArea.innerHTML = '';
+  // show cover
+  const cover = r.cover || '';
+  const videoUrl = r.videoUrl || r.video || '';
+
+  const card = document.createElement('div');
+  card.className = 'media-card';
+  card.innerHTML = `
+    <img src="${cover}" alt="cover" loading="lazy" />
+    <div class="caption">Video</div>
+    <div class="actions">
+      <button id="downloadVideoBtn" class="small-btn">Download Video</button>
+      <a class="small-btn" href="${videoUrl}" target="_blank" rel="noopener">Open Source</a>
+    </div>
+  `;
+  mediaArea.appendChild(card);
+
+  const dlBtn = document.getElementById('downloadVideoBtn');
+  dlBtn.addEventListener('click', () => {
+    if(!videoUrl){
+      alert('No video URL found');
+      return;
+    }
+    // to force download
+    makeDownloadLink(videoUrl, 'tiktok-video.mp4');
+  });
+}
+
+async function fetchTikTok(inputUrl){
+  clearResult();
+  result.classList.remove('hidden');
+  showLoading(true);
+  rawResponse.classList.add('hidden');
+
+  try{
+    const full = endpointBase + encodeURIComponent(inputUrl.trim());
+    const resp = await fetch(full);
+    if(!resp.ok) throw new Error('Network response not ok: ' + resp.status);
+    const data = await resp.json();
+
+    // show raw optional
+    jsonPre.textContent = JSON.stringify(data, null, 2);
+    rawResponse.classList.remove('hidden');
+
+    if(!data.success || !data.result){
+      titleEl.textContent = 'No result';
+      mediaArea.innerHTML = '<div class="media-card"><div class="caption">Cannot fetch data.</div></div>';
+      return;
+    }
+
+    // detect if it's slide (images) or video
+    const isSlide = Array.isArray(data.result.images) && data.result.images.length > 0;
+    const isVideo = !!(data.result.videoUrl || data.result.video);
+
+    if(isSlide){
+      renderSlide(data);
+    } else if(isVideo){
+      renderVideo(data);
+    } else {
+      // fallback: show whatever media fields exist
+      mediaArea.innerHTML = '<div class="media-card"><div class="caption">No media found in response</div></div>';
+    }
+
+  }catch(err){
+    clearResult();
+    result.classList.remove('hidden');
+    titleEl.textContent = 'Error';
+    mediaArea.innerHTML = '<div class="media-card"><div class="caption">'+(err.message||err)+'</div></div>';
+    console.error(err);
+  }finally{
+    showLoading(false);
+  }
+}
+
+fetchBtn.addEventListener('click', () => {
+  const url = urlInput.value.trim();
+  if(!url){ alert('Please paste a TikTok URL'); return }
+  fetchTikTok(url);
+});
+
+clearBtn.addEventListener('click', () => { urlInput.value=''; clearResult(); });
+
+// allow Enter
+urlInput.addEventListener('keydown', e => { if(e.key === 'Enter') fetchBtn.click(); });
+
+// small UX: example sample
+urlInput.placeholder = 'https://vt.tiktok.com/Example or https://www.tiktok.com/@user/video/123...';
+```
+
+---
+
+If you want, saya bisa juga:
+
+* Menambahkan tombol "Copy direct link" untuk tiap gambar/video.
+* Membuat file ZIP siap download berisi ketiga file.
+* Menambahkan fallback untuk CORS (proxy) bila API memblokir browser.
+
+Simpan 3 file di folder yang sama dan buka `index.html` di browser. Jika ada masalah CORS, beri tahu aku dan aku tambahkan solusi proxy atau instruksi untuk menjalankan lewat server lokal (mis. `npx http-server`).

@@ -1,218 +1,41 @@
-:root {
-    --bg-color: #1a1a1a;
-    --text-color: #f0f0f0;
-    --primary-color: #fe2c55; /* Warna merah khas TikTok/akselerasi */
-    --card-bg: #2a2a2a;
-    --input-bg: #3a3a3a;
-    --border-color: #444;
+:root{
+  --bg:#0b0b0c;
+  --panel:#0f1113;
+  --muted:#9aa0a6;
+  --accent:#e53b3b; /* red */
+  --card:#121416;
+  --glass: rgba(255,255,255,0.03);
 }
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-color);
-    color: var(--text-color);
-    line-height: 1.6;
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-header {
-    text-align: center;
-    padding: 30px 20px;
-    background-color: var(--card-bg);
-    border-bottom: 2px solid var(--primary-color);
-}
-
-header h1 {
-    font-size: 2.5em;
-    color: var(--primary-color);
-    margin-bottom: 5px;
-}
-
-main {
-    flex-grow: 1;
-    padding: 40px 20px;
-    max-width: 900px;
-    width: 100%;
-    margin: 0 auto;
-}
-
-.input-section {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 40px;
-}
-
-#tiktokUrl {
-    flex-grow: 1;
-    padding: 15px;
-    border: 2px solid var(--border-color);
-    border-radius: 8px;
-    background-color: var(--input-bg);
-    color: var(--text-color);
-    font-size: 1em;
-    transition: border-color 0.3s;
-}
-
-#tiktokUrl:focus {
-    outline: none;
-    border-color: var(--primary-color);
-}
-
-#downloadBtn {
-    padding: 15px 30px;
-    background-color: var(--primary-color);
-    color: var(--text-color);
-    border: none;
-    border-radius: 8px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background-color 0.3s, opacity 0.3s;
-}
-
-#downloadBtn:hover:not(:disabled) {
-    background-color: #e60046; /* Merah yang sedikit lebih gelap */
-}
-
-#downloadBtn:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-}
-
-/* Loading Indicator */
-#loadingIndicator {
-    text-align: center;
-    padding: 15px;
-    color: var(--primary-color);
-    font-weight: 600;
-    border: 1px solid var(--primary-color);
-    border-radius: 8px;
-    margin-bottom: 20px;
-}
-
-/* Result Container */
-#resultContainer {
-    background-color: var(--card-bg);
-    padding: 25px;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-}
-
-.hidden {
-    display: none !important;
-}
-
-/* Author Info */
-.author-info {
-    display: flex;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.author-info img {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    margin-right: 15px;
-    border: 2px solid var(--primary-color);
-}
-
-.author-info h3 {
-    margin: 0;
-    font-size: 1.1em;
-}
-
-.author-info p {
-    color: #aaa;
-    font-size: 0.9em;
-}
-
-/* Content Details */
-.content-details {
-    margin-bottom: 20px;
-}
-
-.content-details p {
-    font-style: italic;
-    color: #ccc;
-}
-
-/* Video Result Specific Styles */
-#video-result video {
-    width: 100%;
-    max-height: 500px;
-    border-radius: 8px;
-    margin-top: 15px;
-}
-
-/* Slide Result Specific Styles */
-.slide-images-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
-}
-
-.slide-item {
-    background-color: var(--input-bg);
-    border-radius: 8px;
-    overflow: hidden;
-    text-align: center;
-    padding: 10px;
-}
-
-.slide-item img {
-    width: 100%;
-    height: auto;
-    max-height: 200px;
-    object-fit: cover;
-    border-radius: 6px;
-    margin-bottom: 10px;
-}
-
-.slide-item a {
-    display: block;
-    padding: 8px 10px;
-    background-color: var(--primary-color);
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    font-size: 0.9em;
-    transition: background-color 0.3s;
-}
-
-.slide-item a:hover {
-    background-color: #e60046;
-}
-
-/* Footer */
-footer {
-    text-align: center;
-    padding: 15px;
-    background-color: var(--card-bg);
-    color: #888;
-    font-size: 0.85em;
-    margin-top: auto;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
-    .input-section {
-        flex-direction: column;
-    }
-    #downloadBtn {
-        width: 100%;
-    }
-    header h1 {
-        font-size: 2em;
-    }
-}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,'Helvetica Neue',Arial}
+body{background:linear-gradient(180deg,#050506 0%, #0c0c0d 100%);color:#e6e7e8}
+.container{max-width:920px;margin:32px auto;padding:20px}
+.hero{text-align:left;margin-bottom:18px}
+.hero h1{margin:0;font-size:28px}
+.subtitle{color:var(--muted);margin-top:6px}
+.input-area{display:flex;flex-direction:column;gap:10px;margin-bottom:18px}
+.input-area input[type=text]{width:100%;padding:12px 14px;background:var(--panel);border:1px solid #151617;border-radius:8px;color:#eee}
+.controls{display:flex;gap:8px}
+.btn{padding:10px 14px;border-radius:8px;background:transparent;border:1px solid #222;color:#eee;cursor:pointer}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#ff6b6b);border:none;color:#090909}
+.note{color:var(--muted);font-size:13px}
+.result{margin-top:18px;padding:16px;background:var(--card);border-radius:12px;border:1px solid #171819}
+.hidden{display:none}
+.meta{display:flex;justify-content:space-between;align-items:center}
+.author{display:flex;gap:12px;align-items:center}
+.avatar{width:56px;height:56px;border-radius:50%;object-fit:cover;border:2px solid rgba(255,255,255,0.06)}
+.author-name{font-weight:600}
+.author-username{color:var(--muted);font-size:13px}
+.title{margin-top:12px}
+.media-area{display:flex;flex-wrap:wrap;gap:12px;margin-top:12px}
+.media-card{background:var(--glass);padding:8px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);width:calc(33% - 8px);min-width:160px}
+.media-card img{width:100%;height:160px;object-fit:cover;border-radius:8px}
+.media-card .caption{margin-top:8px;font-size:13px;color:var(--muted)}
+.media-card .actions{display:flex;gap:8px;margin-top:8px}
+.small-btn{padding:6px 8px;border-radius:8px;background:#111;border:1px solid rgba(255,255,255,0.03);cursor:pointer}
+.stats{color:var(--muted);font-size:13px}
+.raw{margin-top:12px}
+.footer{margin-top:22px;color:var(--muted);font-size:13px}
+.accent{color:var(--accent);font-weight:700}
+@media (max-width:720px){.media-card{width:48%}}
+@media (max-width:420px){.media-card{width:100%}}
