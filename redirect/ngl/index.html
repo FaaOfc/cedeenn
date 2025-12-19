@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>NGL Sender</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .box {
+      background: #1a1a1a;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+    }
+    input, textarea, button {
+      width: 100%;
+      margin-top: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: none;
+    }
+    button {
+      background: #b50000;
+      color: white;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #d10000;
+    }
+    small {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+
+<div class="box">
+  <h3>Kirim Pesan NGL</h3>
+
+  <input type="text" id="username" placeholder="Username NGL (tanpa @)">
+  <textarea id="message" placeholder="Isi pesan"></textarea>
+  <input type="number" id="count" placeholder="Jumlah kirim" value="1" min="1">
+
+  <button onclick="sendNGL()">Kirim</button>
+  <small id="status"></small>
+</div>
+
+<script>
+async function sendNGL() {
+  const username = document.getElementById("username").value.trim();
+  const message  = document.getElementById("message").value.trim();
+  const count    = parseInt(document.getElementById("count").value);
+
+  if (!username || !message || count < 1) {
+    alert("Lengkapi semua field!");
+    return;
+  }
+
+  document.getElementById("status").innerText = "Mengirim...";
+
+  for (let i = 1; i <= count; i++) {
+    try {
+      await fetch("https://ngl.link/api/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username: username,
+          question: message,
+          deviceId: crypto.randomUUID(),
+          gameSlug: "",
+          referrer: ""
+        })
+      });
+
+      document.getElementById("status").innerText =
+        `Terkirim ${i}/${count}`;
+
+      // delay biar ga langsung keblok
+      await new Promise(r => setTimeout(r, 800));
+
+    } catch (err) {
+      document.getElementById("status").innerText =
+        "Gagal di pengiriman ke-" + i;
+      break;
+    }
+  }
+}
+</script>
+
+</body>
+</html>
