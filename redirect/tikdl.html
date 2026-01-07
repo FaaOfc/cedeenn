@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TikTok Downloader - Dark Edition</title>
+    <title>Faanrky TT Downloader - All-in-One</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f172a; } /* Slate 950 */
+        body { background-color: #0f172a; color: #e2e8f0; }
         .glass-card {
             background: rgba(30, 41, 59, 0.7);
             backdrop-filter: blur(10px);
@@ -18,136 +18,135 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+        .img-card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
     </style>
 </head>
-<body class="text-slate-200 min-h-screen font-sans">
+<body class="min-h-screen font-sans pb-10">
 
-    <header class="py-12 px-4 text-center">
-        <h1 class="text-4xl md:text-5xl font-extrabold mb-2 gradient-text">TT Downloader</h1>
-        <p class="text-slate-400 text-sm md:text-base">Download TikTok Video & Audio via API Faanrky</p>
+    <header class="py-10 px-4 text-center">
+        <h1 class="text-4xl font-extrabold gradient-text mb-2">Faanrky Downloader</h1>
+        <p class="text-slate-400">Support Video & Slide Photo TikTok</p>
     </header>
 
-    <main class="max-w-3xl mx-auto px-4 pb-20">
-        <div class="glass-card rounded-2xl p-2 mb-8 flex flex-col md:flex-row gap-2 shadow-2xl">
+    <main class="max-w-5xl mx-auto px-4">
+        <div class="glass-card rounded-2xl p-2 mb-8 flex flex-col md:flex-row gap-2">
             <input type="text" id="tiktokUrl" placeholder="Tempel URL TikTok di sini..." 
-                class="flex-1 bg-transparent border-none px-6 py-4 text-white focus:ring-0 outline-none text-lg"
-                autocomplete="off">
-            <button onclick="fetchVideoData()" id="btnProcess"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-10 rounded-xl transition-all active:scale-95 shadow-lg shadow-indigo-500/20">
+                class="flex-1 bg-transparent border-none px-6 py-4 text-white focus:ring-0 outline-none text-lg">
+            <button onclick="fetchData()" id="btnProcess"
+                class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-10 rounded-xl transition-all">
                 PROSES
             </button>
         </div>
 
         <div id="loading" class="hidden text-center py-10">
-            <div class="animate-spin inline-block w-8 h-8 border-4 border-current border-t-transparent text-indigo-500 rounded-full mb-2"></div>
-            <p class="text-slate-400">Sedang mengambil data...</p>
+            <div class="animate-spin inline-block w-8 h-8 border-4 border-indigo-500 border-t-transparent rounded-full mb-2"></div>
+            <p>Mengambil data...</p>
         </div>
 
-        <div id="resultCard" class="hidden animate-in fade-in zoom-in duration-300">
-            <div class="glass-card rounded-3xl overflow-hidden shadow-2xl border border-slate-700">
-                <div class="md:flex">
-                    <div class="md:w-1/2 relative group">
-                        <img id="resThumbnail" src="" alt="Cover" class="w-full h-full object-cover min-h-[400px]">
-                        <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent to-transparent opacity-60"></div>
-                        <div class="absolute bottom-4 left-4">
-                            <span class="bg-indigo-600 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">Preview Cover</span>
+        <div id="resultContent" class="hidden">
+            
+            <div class="glass-card rounded-3xl p-6 mb-8 border border-slate-700">
+                <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div class="text-center md:text-left">
+                        <h2 id="resTitle" class="text-lg font-bold mb-2">Judul Video</h2>
+                        <p id="resAuthor" class="text-indigo-400 font-medium">@username</p>
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <div class="text-center bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-play text-cyan-400 text-xs"></i>
+                            <p id="resViews" class="text-sm font-bold">-</p>
+                        </div>
+                        <div class="text-center bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-heart text-pink-500 text-xs"></i>
+                            <p id="resLikes" class="text-sm font-bold">-</p>
+                        </div>
+                        <div class="text-center bg-slate-800/50 px-4 py-2 rounded-xl border border-slate-700">
+                            <i class="fa-solid fa-share text-green-400 text-xs"></i>
+                            <p id="resShares" class="text-sm font-bold">-</p>
                         </div>
                     </div>
 
-                    <div class="md:w-1/2 p-8 flex flex-col justify-between">
-                        <div>
-                            <h2 id="resTitle" class="text-xl font-bold text-white mb-6 line-clamp-2">Judul Video</h2>
-                            
-                            <div class="grid grid-cols-3 gap-3 mb-8">
-                                <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50 text-center">
-                                    <i class="fa-solid fa-play text-cyan-400 text-sm mb-1"></i>
-                                    <p id="resViews" class="text-sm font-bold text-white">-</p>
-                                    <p class="text-[10px] text-slate-500 uppercase">Views</p>
-                                </div>
-                                <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50 text-center">
-                                    <i class="fa-solid fa-heart text-pink-500 text-sm mb-1"></i>
-                                    <p id="resLikes" class="text-sm font-bold text-white">-</p>
-                                    <p class="text-[10px] text-slate-500 uppercase">Likes</p>
-                                </div>
-                                <div class="bg-slate-800/50 p-3 rounded-2xl border border-slate-700/50 text-center">
-                                    <i class="fa-solid fa-share text-green-400 text-sm mb-1"></i>
-                                    <p id="resShares" class="text-sm font-bold text-white">-</p>
-                                    <p class="text-[10px] text-slate-500 uppercase">Shares</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="space-y-3">
-                            <a id="btnNormal" href="#" target="_blank" class="flex items-center justify-center gap-2 w-full bg-slate-700 hover:bg-slate-600 text-white py-4 rounded-xl font-semibold transition-all">
-                                <i class="fa-solid fa-download"></i> Download Normal
-                            </a>
-                            <a id="btnHD" href="#" target="_blank" class="flex items-center justify-center gap-2 w-full bg-indigo-600 hover:bg-indigo-500 text-white py-4 rounded-xl font-semibold transition-all shadow-lg shadow-indigo-500/20">
-                                <i class="fa-solid fa-clapperboard"></i> Download Resolusi HD
-                            </a>
-                            <a id="btnMusic" href="#" target="_blank" class="flex items-center justify-center gap-2 w-full border border-slate-600 hover:bg-slate-800 text-slate-300 py-4 rounded-xl font-semibold transition-all">
-                                <i class="fa-solid fa-music"></i> Download Audio MP3
-                            </a>
-                        </div>
-
-                        <p class="mt-6 text-xs text-slate-500 text-center">
-                            Uploaded by <span id="resAuthor" class="text-indigo-400 font-medium">@username</span>
-                        </p>
-                    </div>
+                    <a id="btnMusic" href="#" target="_blank" class="flex items-center gap-2 bg-slate-700 hover:bg-slate-600 px-6 py-3 rounded-xl font-semibold">
+                        <i class="fa-solid fa-music"></i> Audio Only
+                    </a>
                 </div>
             </div>
+
+            <div id="videoDisplay" class="hidden flex flex-col md:flex-row gap-6 glass-card p-4 rounded-3xl">
+                <img id="resCover" src="" class="md:w-1/3 rounded-2xl object-cover h-[400px]">
+                <div class="md:w-2/3 flex flex-col justify-center gap-4 p-4">
+                    <a id="btnNormal" href="#" target="_blank" class="w-full text-center bg-slate-600 py-4 rounded-xl font-bold">Download MP4 (Normal)</a>
+                    <a id="btnHD" href="#" target="_blank" class="w-full text-center bg-indigo-600 py-4 rounded-xl font-bold shadow-lg shadow-indigo-500/20">Download MP4 (HD Quality)</a>
+                </div>
+            </div>
+
+            <div id="photoDisplay" class="hidden">
+                <h3 class="text-xl font-bold mb-6 flex items-center gap-2">
+                    <i class="fa-solid fa-images text-indigo-400"></i> Gallery Photos
+                </h3>
+                <div id="imageGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                    </div>
+            </div>
+
         </div>
     </main>
 
     <script>
-        async function fetchVideoData() {
+        async function fetchData() {
             const urlInput = document.getElementById('tiktokUrl').value;
-            const btn = document.getElementById('btnProcess');
-            const loader = document.getElementById('loading');
-            const resultCard = document.getElementById('resultCard');
+            if (!urlInput) return alert('Masukkan URL!');
 
-            if (!urlInput) {
-                alert('Tolong masukkan link TikTok!');
-                return;
-            }
-
-            // Reset & Loading State
-            btn.disabled = true;
-            loader.classList.remove('hidden');
-            resultCard.classList.add('hidden');
+            // UI Reset
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('resultContent').classList.add('hidden');
+            document.getElementById('videoDisplay').classList.add('hidden');
+            document.getElementById('photoDisplay').classList.add('hidden');
 
             try {
                 const response = await fetch(`https://api.faanrky.my.id/download/tiktok?url=${encodeURIComponent(urlInput)}`);
                 const json = await response.json();
+                const data = json.result.data;
 
-                if (json.status && json.result.code === 0) {
-                    const data = json.result.data;
+                // 1. Update Global Info
+                document.getElementById('resTitle').innerText = data.title || 'TikTok Content';
+                document.getElementById('resAuthor').innerText = `@${data.author.unique_id}`;
+                document.getElementById('resViews').innerText = data.play_count.toLocaleString();
+                document.getElementById('resLikes').innerText = data.digg_count.toLocaleString();
+                document.getElementById('resShares').innerText = data.share_count.toLocaleString();
+                document.getElementById('btnMusic').href = data.music;
 
-                    // Mapping Data
-                    document.getElementById('resThumbnail').src = data.cover;
-                    document.getElementById('resTitle').innerText = data.title || 'No Title';
-                    document.getElementById('resViews').innerText = data.play_count.toLocaleString();
-                    document.getElementById('resLikes').innerText = data.digg_count.toLocaleString();
-                    document.getElementById('resShares').innerText = data.share_count.toLocaleString();
-                    document.getElementById('resAuthor').innerText = `@${data.author.unique_id}`;
-
-                    // Set Links
+                // 2. Check Mode: PHOTO or VIDEO?
+                if (data.images && data.images.length > 0) {
+                    // MODE PHOTO
+                    const grid = document.getElementById('imageGrid');
+                    grid.innerHTML = ''; // Clear previous
+                    data.images.forEach((img, index) => {
+                        grid.innerHTML += `
+                            <div class="glass-card rounded-2xl overflow-hidden img-card border border-slate-700">
+                                <img src="${img}" class="w-full h-64 object-cover">
+                                <div class="p-4">
+                                    <a href="${img}" target="_blank" class="block w-full text-center bg-indigo-600/20 hover:bg-indigo-600 text-indigo-400 hover:text-white py-2 rounded-lg text-sm font-bold transition-all">
+                                        Download Foto ${index + 1}
+                                    </a>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    document.getElementById('photoDisplay').classList.remove('hidden');
+                } else {
+                    // MODE VIDEO
+                    document.getElementById('resCover').src = data.cover;
                     document.getElementById('btnNormal').href = data.play;
                     document.getElementById('btnHD').href = data.hdplay;
-                    document.getElementById('btnMusic').href = data.music;
-
-                    // Show Results
-                    loader.classList.add('hidden');
-                    resultCard.classList.remove('hidden');
-                } else {
-                    alert('Gagal mengambil data. Pastikan link benar.');
-                    loader.classList.add('hidden');
+                    document.getElementById('videoDisplay').classList.remove('hidden');
                 }
-            } catch (error) {
-                console.error(error);
-                alert('Terjadi kesalahan server.');
-                loader.classList.add('hidden');
+
+                document.getElementById('resultContent').classList.remove('hidden');
+            } catch (e) {
+                alert('Error mengambil data.');
             } finally {
-                btn.disabled = false;
+                document.getElementById('loading').classList.add('hidden');
             }
         }
     </script>
