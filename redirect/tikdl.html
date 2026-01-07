@@ -7,27 +7,30 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background-color: #0f172a; color: #e2e8f0; overflow-x: hidden; }
-        .glass-card { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        body { background-color: #0f172a; color: #f1f5f9; overflow-x: hidden; }
+        .glass-card { 
+            background: rgba(30, 41, 59, 0.7); 
+            backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+        }
         .sidebar { transition: transform 0.3s ease-in-out; z-index: 100; }
-        .overlay { background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: none; z-index: 90; }
-        .gradient-text { background: linear-gradient(to right, #22d3ee, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .overlay { background: rgba(0,0,0,0.7); backdrop-filter: blur(4px); display: none; z-index: 90; }
+        .gradient-text { background: linear-gradient(to right, #6366f1, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         #adPopup { z-index: 200; display: flex; }
         .btn-disabled { opacity: 0.5; cursor: not-allowed; }
-        .hero-bg { background: radial-gradient(circle at top right, rgba(99, 102, 241, 0.15), transparent); }
     </style>
 </head>
-<body class="min-h-screen font-sans hero-bg">
+<body class="min-h-screen font-sans">
 
     <div id="adPopup" class="fixed inset-0 items-center justify-center p-4 bg-black/80">
         <div class="glass-card max-w-sm w-full rounded-3xl overflow-hidden shadow-2xl">
             <img src="https://via.placeholder.com/400x250/1e293b/ffffff?text=Premium+Sponsor" class="w-full h-48 object-cover">
             <div class="p-6 text-center">
-                <h3 class="text-xl font-bold mb-2 text-white italic">PROMOTION</h3>
-                <p class="text-slate-400 text-sm mb-6">Nikmati kecepatan download maksimal dengan mendukung partner kami.</p>
+                <h3 class="text-xl font-bold mb-2 text-white">ADVERTISING</h3>
+                <p class="text-slate-400 text-sm mb-6">Dukung layanan kami dengan melihat iklan singkat ini.</p>
                 <div class="flex flex-col gap-3">
-                    <a href="#" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold transition">Kunjungi</a>
-                    <button id="closeAdBtn" disabled class="btn-disabled bg-slate-700 text-slate-400 py-3 rounded-xl font-bold">Close Ad (5s)</button>
+                    <a href="#" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold transition">Kunjungi Website</a>
+                    <button id="closeAdBtn" disabled class="btn-disabled bg-slate-800 text-slate-500 py-3 rounded-xl font-bold">Close Ad (5s)</button>
                 </div>
             </div>
         </div>
@@ -37,98 +40,83 @@
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-slate-900 border-r border-slate-800 sidebar -translate-x-full">
         <div class="p-6">
             <div class="flex items-center justify-between mb-10">
-                <span class="text-2xl font-bold gradient-text">FAANRKY</span>
-                <button onclick="toggleSidebar()" class="text-slate-400"><i class="fa-solid fa-xmark"></i></button>
+                <span class="text-2xl font-bold text-white tracking-tighter">FAANRKY</span>
+                <button onclick="toggleSidebar()" class="text-slate-400 text-xl"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <nav class="space-y-4 text-sm">
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-indigo-600/20 text-indigo-400 border border-indigo-600/30"><i class="fa-solid fa-house"></i> Dashboard</a>
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-code"></i> API Docs</a>
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 transition"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
+            <nav class="space-y-3">
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl bg-indigo-600 text-white font-medium shadow-lg shadow-indigo-500/20"><i class="fa-solid fa-house"></i> Dashboard</a>
+                <a href="https://api.faanrky.my.id" target="_blank" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition"><i class="fa-solid fa-code"></i> API Documentation</a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-slate-800 text-slate-400 hover:text-white transition"><i class="fa-solid fa-clock-rotate-left"></i> History</a>
                 <hr class="border-slate-800 my-4">
-                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400"><i class="fa-solid fa-right-from-bracket"></i> Logout</a>
+                <a href="#" class="flex items-center gap-3 p-3 rounded-xl hover:bg-red-500/10 text-red-400 transition"><i class="fa-solid fa-right-from-bracket"></i> Logout Account</a>
             </nav>
         </div>
     </aside>
 
     <nav class="p-4 flex items-center justify-between glass-card sticky top-0 z-50">
-        <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 transition">
-            <i class="fa-solid fa-bars"></i>
+        <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-800 hover:bg-slate-700 text-white transition">
+            <i class="fa-solid fa-bars-staggered"></i>
         </button>
-        <h1 class="font-black text-xl tracking-tighter italic">FAANRKY <span class="text-indigo-500 text-sm align-top">API</span></h1>
-        <div class="hidden md:flex gap-6 text-sm font-medium">
-            <a href="#" class="hover:text-indigo-400">Guide</a>
-            <a href="#" class="hover:text-indigo-400">About</a>
-        </div>
+        <h1 class="font-bold text-xl tracking-tighter text-white">TT <span class="text-indigo-500 uppercase">Downloader</span></h1>
         <div class="w-10"></div>
     </nav>
 
-    <section class="max-w-4xl mx-auto px-4 pt-16 pb-10 text-center">
-        <h1 class="text-5xl md:text-7xl font-black mb-6 tracking-tight">TikTok <span class="gradient-text">Downloader</span></h1>
-        <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-            Satu-satunya platform pengunduh TikTok tercepat yang mendukung Video HD dan Slide Foto otomatis tanpa watermark.
-        </p>
-    </section>
+    <header class="max-w-4xl mx-auto px-4 pt-16 pb-12 text-center">
+        <h2 class="text-4xl md:text-6xl font-black mb-4 tracking-tight">Download TikTok <span class="gradient-text">Unlimited</span></h2>
+        <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto">Masukan link video atau foto slide TikTok Anda dan unduh dengan kualitas terbaik secara instan.</p>
+    </header>
 
-    <main class="max-w-4xl mx-auto px-4 relative z-10">
-        <div class="glass-card rounded-3xl p-3 mb-16 flex flex-col md:flex-row gap-3 shadow-2xl shadow-indigo-500/10 border-indigo-500/20">
-            <div class="flex-1 flex items-center px-4">
-                <i class="fa-solid fa-link text-indigo-400 mr-3"></i>
-                <input type="text" id="tiktokUrl" placeholder="Tempel URL TikTok di sini..." 
-                    class="w-full bg-transparent border-none py-4 text-white focus:ring-0 outline-none text-lg">
-            </div>
-            <button onclick="fetchData()" id="btnProcess" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 px-12 rounded-2xl transition-all hover:shadow-[0_0_20px_rgba(79,70,229,0.4)] active:scale-95 uppercase tracking-widest">
-                Download
+    <main class="max-w-4xl mx-auto px-4">
+        <div class="glass-card rounded-3xl p-2 md:p-3 mb-16 flex flex-col md:flex-row gap-2 shadow-2xl">
+            <input type="text" id="tiktokUrl" placeholder="Tempel URL TikTok di sini..." 
+                class="flex-1 bg-transparent border-none px-6 py-4 text-white focus:ring-0 outline-none text-lg">
+            <button onclick="fetchData()" id="btnProcess" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-4 px-12 rounded-2xl transition-all active:scale-95 shadow-lg shadow-indigo-500/20 uppercase tracking-widest">
+                Proses
             </button>
         </div>
 
-        <div id="resultContent" class="hidden animate-in fade-in zoom-in duration-500 mb-20">
-            <div id="videoDisplay" class="hidden glass-card rounded-3xl p-6 border border-slate-700">
+        <div id="resultContent" class="hidden animate-in fade-in slide-in-from-bottom-5 duration-500 mb-20">
+            <div id="videoDisplay" class="hidden glass-card rounded-3xl p-6">
                 </div>
             <div id="photoDisplay" class="hidden">
                 </div>
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
-            <div class="glass-card p-8 rounded-3xl text-center hover:border-indigo-500/50 transition">
-                <div class="w-14 h-14 bg-indigo-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fa-solid fa-bolt text-2xl text-indigo-400"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Fast Download</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Kecepatan download tanpa limit. Server kami memproses permintaan Anda dalam hitungan milidetik.</p>
+            <div class="glass-card p-8 rounded-3xl border-slate-700/50">
+                <i class="fa-solid fa-bolt text-3xl text-indigo-400 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2 text-white">Fast Download</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Kecepatan unduh maksimal tanpa adanya batasan limit harian untuk setiap pengguna.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl text-center hover:border-cyan-500/50 transition">
-                <div class="w-14 h-14 bg-cyan-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fa-solid fa-shield-halved text-2xl text-cyan-400"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Free To Use</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Gunakan semua fitur premium, mulai dari HD Video hingga MP3 secara gratis selamanya.</p>
+            <div class="glass-card p-8 rounded-3xl border-slate-700/50">
+                <i class="fa-solid fa-check-double text-3xl text-green-400 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2 text-white">Free To Use</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Nikmati semua fitur premium mulai dari video HD hingga konversi MP3 secara gratis.</p>
             </div>
-            <div class="glass-card p-8 rounded-3xl text-center hover:border-pink-500/50 transition">
-                <div class="w-14 h-14 bg-pink-600/20 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <i class="fa-solid fa-image text-2xl text-pink-400"></i>
-                </div>
-                <h3 class="text-xl font-bold mb-3">Slide Support</h3>
-                <p class="text-slate-400 text-sm leading-relaxed">Satu-satunya yang mendukung pengunduhan massal untuk konten TikTok Photo Mode.</p>
+            <div class="glass-card p-8 rounded-3xl border-slate-700/50">
+                <i class="fa-solid fa-layer-group text-3xl text-cyan-400 mb-4"></i>
+                <h3 class="text-lg font-bold mb-2 text-white">Slide Support</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">Mendukung pengunduhan gambar secara massal untuk konten TikTok dalam mode foto.</p>
             </div>
         </div>
     </main>
 
-    <footer class="border-t border-slate-800 bg-slate-900/50 py-12 px-4">
-        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8">
+    <footer class="border-t border-slate-800 bg-slate-900/50 py-12 px-4 mt-10">
+        <div class="max-w-4xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
             <div class="text-center md:text-left">
-                <h2 class="text-2xl font-black gradient-text mb-2 tracking-tighter">FAANRKY</h2>
-                <p class="text-slate-500 text-sm">© 2024 Faanrky API. All rights reserved.</p>
+                <h2 class="text-xl font-black text-white mb-1">FAANRKY API</h2>
+                <p class="text-slate-500 text-xs tracking-widest uppercase">© 2024 All Rights Reserved</p>
             </div>
-            <div class="flex gap-6 text-2xl">
-                <a href="#" class="text-slate-500 hover:text-indigo-400 transition"><i class="fa-brands fa-github"></i></a>
-                <a href="#" class="text-slate-500 hover:text-indigo-400 transition"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="text-slate-500 hover:text-indigo-400 transition"><i class="fa-brands fa-telegram"></i></a>
+            <div class="flex gap-6 text-xl text-slate-400">
+                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-github"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="hover:text-white transition"><i class="fa-brands fa-telegram"></i></a>
             </div>
         </div>
     </footer>
 
     <script>
-        // -- AD POPUP --
+        // AD LOGIC
         let timeLeft = 5;
         const closeBtn = document.getElementById('closeAdBtn');
         const timer = setInterval(() => {
@@ -136,16 +124,14 @@
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 closeBtn.innerText = "Close Ad Now";
-                closeBtn.classList.remove('btn-disabled', 'bg-slate-700', 'text-slate-400');
-                closeBtn.classList.add('bg-red-500', 'text-white', 'hover:bg-red-600');
+                closeBtn.classList.remove('btn-disabled', 'bg-slate-800', 'text-slate-500');
+                closeBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-500');
                 closeBtn.disabled = false;
-            } else {
-                closeBtn.innerText = `Close Ad (${timeLeft}s)`;
-            }
+            } else { closeBtn.innerText = `Close Ad (${timeLeft}s)`; }
         }, 1000);
         closeBtn.onclick = () => document.getElementById('adPopup').style.display = 'none';
 
-        // -- SIDEBAR --
+        // SIDEBAR LOGIC
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -153,11 +139,11 @@
             overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
         }
 
-        // -- FETCH DATA --
+        // FETCH API LOGIC
         async function fetchData() {
             const url = document.getElementById('tiktokUrl').value;
             const btn = document.getElementById('btnProcess');
-            if(!url) return alert("Paste URL TikTok!");
+            if(!url) return alert("Tempel URL TikTok!");
 
             btn.innerText = "WAIT...";
             btn.disabled = true;
@@ -173,30 +159,31 @@
                 photoDiv.classList.add('hidden');
 
                 if(data.images && data.images.length > 0) {
-                    photoDiv.innerHTML = `<h3 class="text-2xl font-black mb-8 italic">PHOTO GALLERY (${data.images.length})</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>`;
+                    photoDiv.innerHTML = `<h3 class="text-xl font-bold mb-6 italic text-indigo-400"><i class="fa-solid fa-images mr-2"></i> ${data.images.length} Photos Found</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6"></div>`;
                     const grid = photoDiv.querySelector('div');
                     data.images.forEach((img, i) => {
                         grid.innerHTML += `
-                            <div class="glass-card rounded-3xl overflow-hidden shadow-xl border border-slate-700">
+                            <div class="glass-card rounded-3xl overflow-hidden border border-slate-700">
                                 <img src="${img}" class="w-full h-72 object-cover">
-                                <div class="p-4"><a href="${img}" target="_blank" class="block bg-indigo-600 text-white text-center py-3 rounded-2xl font-black text-sm uppercase">Download #${i+1}</a></div>
+                                <div class="p-4"><a href="${img}" target="_blank" class="block bg-slate-800 hover:bg-indigo-600 text-white text-center py-3 rounded-xl font-bold transition text-xs uppercase">Download Image #${i+1}</a></div>
                             </div>`;
                     });
                     photoDiv.classList.remove('hidden');
                 } else {
                     videoDiv.innerHTML = `
                         <div class="md:flex gap-8 items-center">
-                            <img src="${data.cover}" class="md:w-64 rounded-2xl shadow-2xl">
-                            <div class="flex-1 space-y-4">
-                                <h3 class="text-xl font-bold line-clamp-2">${data.title || 'TikTok Video'}</h3>
-                                <div class="flex gap-4 text-xs font-bold text-slate-400">
-                                    <span><i class="fa-solid fa-play mr-1 text-indigo-400"></i> ${data.play_count}</span>
-                                    <span><i class="fa-solid fa-heart mr-1 text-pink-500"></i> ${data.digg_count}</span>
+                            <img src="${data.cover}" class="md:w-64 rounded-2xl shadow-2xl border border-slate-700">
+                            <div class="flex-1 space-y-5">
+                                <h3 class="text-xl font-bold text-white">${data.title || 'TikTok Content'}</h3>
+                                <div class="flex gap-4 text-[10px] font-bold text-slate-500 uppercase tracking-widest">
+                                    <span><i class="fa-solid fa-play mr-1 text-indigo-500"></i> ${data.play_count}</span>
+                                    <span><i class="fa-solid fa-heart mr-1 text-indigo-500"></i> ${data.digg_count}</span>
+                                    <span><i class="fa-solid fa-share mr-1 text-indigo-500"></i> ${data.share_count}</span>
                                 </div>
                                 <div class="flex flex-col gap-3">
-                                    <a href="${data.play}" target="_blank" class="bg-slate-700 py-3 rounded-xl text-center font-bold">NORMAL QUALITY</a>
-                                    <a href="${data.hdplay}" target="_blank" class="bg-indigo-600 py-3 rounded-xl text-center font-bold shadow-lg shadow-indigo-500/20">HD QUALITY</a>
-                                    <a href="${data.music}" target="_blank" class="border border-slate-700 py-3 rounded-xl text-center font-bold text-slate-400"><i class="fa-solid fa-music mr-2"></i>AUDIO ONLY</a>
+                                    <a href="${data.play}" target="_blank" class="bg-slate-800 hover:bg-slate-700 py-4 rounded-xl text-center font-bold transition">NORMAL QUALITY</a>
+                                    <a href="${data.hdplay}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 py-4 rounded-xl text-center font-bold shadow-lg shadow-indigo-500/20 transition">HD VIDEO QUALITY</a>
+                                    <a href="${data.music}" target="_blank" class="border border-slate-700 hover:bg-slate-800 py-4 rounded-xl text-center font-bold text-slate-400 transition italic text-sm"><i class="fa-solid fa-music mr-2"></i>Download Music MP3</a>
                                 </div>
                             </div>
                         </div>`;
@@ -204,9 +191,9 @@
                 }
                 document.getElementById('resultContent').classList.remove('hidden');
             } catch (e) {
-                alert("Error: Link tidak valid atau API sedang down.");
+                alert("Request Error. Check Link or API Status.");
             } finally {
-                btn.innerText = "DOWNLOAD";
+                btn.innerText = "PROSES";
                 btn.disabled = false;
             }
         }
