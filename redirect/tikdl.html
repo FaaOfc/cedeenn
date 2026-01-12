@@ -7,19 +7,21 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body, .glass-card, nav, aside, input { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        body, .glass-card, nav, aside, input, h2, h3, p, span { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
 
         /* DARK THEME */
         body.dark { background-color: #0f172a; color: #f1f5f9; }
         body.dark .glass-card { background: rgba(30, 41, 59, 0.7); border: 1px solid rgba(255, 255, 255, 0.08); }
         body.dark nav { background: rgba(15, 23, 42, 0.8); }
         body.dark aside { background: #0f172a; border-right: 1px solid #1e293b; }
+        body.dark .text-custom { color: #f1f5f9; }
 
-        /* LIGHT THEME */
+        /* LIGHT THEME - Perbaikan Warna Font */
         body.light { background-color: #f8fafc; color: #1e293b; }
-        body.light .glass-card { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.05); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-        body.light nav { background: rgba(248, 250, 252, 0.8); border-bottom: 1px solid #e2e8f0; }
+        body.light .glass-card { background: rgba(255, 255, 255, 0.9); border: 1px solid rgba(0, 0, 0, 0.08); box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.1); }
+        body.light nav { background: rgba(248, 250, 252, 0.9); border-bottom: 1px solid #e2e8f0; }
         body.light aside { background: #ffffff; border-right: 1px solid #e2e8f0; }
+        body.light .text-custom { color: #1e293b; } /* Font jadi gelap di tema terang */
         body.light .text-slate-400 { color: #64748b; }
         body.light input { color: #1e293b; }
 
@@ -38,11 +40,11 @@
                 <div class="w-16 h-16 bg-indigo-600/20 rounded-full flex items-center justify-center mx-auto mb-4 text-indigo-500">
                     <i class="fa-solid fa-rectangle-ad text-3xl"></i>
                 </div>
-                <h3 class="text-xl font-black mb-2 italic tracking-tighter uppercase">Support Us</h3>
-                <p class="text-slate-400 text-sm mb-6 leading-relaxed">Dukung layanan kami tetap gratis dengan melihat iklan partner kami sejenak.</p>
+                <h3 class="text-xl font-black mb-2 italic tracking-tighter uppercase text-custom">Support Us</h3>
+                <p class="text-slate-400 text-sm mb-6 leading-relaxed text-custom">Dukung layanan kami tetap gratis dengan melihat iklan partner kami sejenak.</p>
                 <div class="flex flex-col gap-3">
                     <a href="#" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 text-white py-3 rounded-xl font-bold transition uppercase tracking-widest text-xs">Kunjungi Website</a>
-                    <button id="closeAdBtn" disabled class="btn-disabled bg-slate-800 text-slate-500 py-3 rounded-xl font-bold text-xs uppercase">Tunggu (5s)</button>
+                    <button id="closeAdBtn" disabled class="btn-disabled bg-slate-800 text-slate-400 py-3 rounded-xl font-bold text-xs uppercase">Tunggu (5s)</button>
                 </div>
             </div>
         </div>
@@ -50,15 +52,15 @@
 
     <div id="overlay" class="fixed inset-0 overlay" onclick="toggleSidebar()"></div>
     <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 sidebar -translate-x-full shadow-2xl">
-        <div class="p-6">
+        <div class="p-6 text-custom">
             <div class="flex items-center justify-between mb-10">
                 <span class="text-2xl font-black italic tracking-tighter text-indigo-500">FAANRKY</span>
-                <button onclick="toggleSidebar()" class="text-xl"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <nav class="space-y-2">
-                <a href="#" class="flex items-center gap-3 p-4 rounded-xl bg-indigo-600 text-white shadow-lg shadow-indigo-500/20 font-bold"><i class="fa-solid fa-house"></i> Home</a>
-                <a href="#" onclick="alert('Gunakan input utama untuk TikTok')" class="flex items-center gap-3 p-4 rounded-xl hover:bg-indigo-500/10 transition text-sm"><i class="fa-brands fa-tiktok"></i> TikTok DL</a>
-                <a href="#" onclick="alert('Gunakan input utama untuk Instagram')" class="flex items-center gap-3 p-4 rounded-xl hover:bg-indigo-500/10 transition text-sm"><i class="fa-brands fa-instagram"></i> Instagram DL</a>
+                <a href="#" class="flex items-center gap-3 p-4 rounded-xl bg-indigo-600 text-white font-bold"><i class="fa-solid fa-house"></i> Home</a>
+                <a href="#" class="flex items-center gap-3 p-4 rounded-xl hover:bg-indigo-500/10 transition text-sm"><i class="fa-brands fa-tiktok"></i> TikTok DL</a>
+                <a href="#" class="flex items-center gap-3 p-4 rounded-xl hover:bg-indigo-500/10 transition text-sm"><i class="fa-brands fa-instagram"></i> Instagram DL</a>
                 <hr class="my-6 opacity-10">
                 <a href="#" class="text-red-500 p-4 flex items-center gap-3 font-bold"><i class="fa-solid fa-power-off"></i> Logout</a>
             </nav>
@@ -69,7 +71,7 @@
         <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-500">
             <i class="fa-solid fa-bars-staggered"></i>
         </button>
-        <h1 class="font-black text-xl tracking-tighter italic">FAANRKY <span class="text-indigo-500">DL</span></h1>
+        <h1 class="font-black text-xl tracking-tighter italic text-custom uppercase">FAANRKY <span class="text-indigo-500">DL</span></h1>
         <button onclick="toggleTheme()" class="w-10 h-10 flex items-center justify-center rounded-xl bg-indigo-600/10 text-indigo-500">
             <i id="themeIcon" class="fa-solid fa-moon"></i>
         </button>
@@ -77,53 +79,31 @@
 
     <main class="max-w-4xl mx-auto px-4 pt-12 pb-20">
         <header class="text-center mb-12">
-            <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase leading-none">Social <span class="gradient-text tracking-normal">Media</span> DL</h2>
-            <p class="text-slate-400 text-sm md:text-base max-w-lg mx-auto leading-relaxed">Download konten TikTok dan Instagram dalam satu tempat. Cepat, Gratis, dan Tanpa Watermark.</p>
+            <h2 class="text-5xl md:text-7xl font-black mb-6 tracking-tighter uppercase text-custom leading-none">Social <span class="gradient-text tracking-normal">Media</span> DL</h2>
+            <p class="text-slate-400 text-sm md:text-base max-w-lg mx-auto text-custom leading-relaxed">Download konten TikTok dan Instagram dalam satu tempat.</p>
         </header>
 
-        <div class="glass-card rounded-[2.5rem] p-3 mb-12 flex flex-col md:flex-row gap-2 shadow-2xl border-indigo-500/20">
+        <div class="glass-card rounded-[2.5rem] p-3 mb-12 flex flex-col md:flex-row gap-2">
             <input type="text" id="inputUrl" placeholder="Tempel link TikTok atau Instagram..." 
                 class="flex-1 bg-transparent border-none px-6 py-4 focus:ring-0 outline-none text-lg">
-            <button onclick="handleProcess()" id="btnProcess" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 px-12 rounded-[2rem] transition-all shadow-lg shadow-indigo-500/20 uppercase tracking-widest">
+            <button onclick="handleProcess()" id="btnProcess" class="bg-indigo-600 hover:bg-indigo-500 text-white font-black py-4 px-12 rounded-[2rem] transition-all uppercase tracking-widest">
                 Download
             </button>
         </div>
 
         <div id="loader" class="hidden text-center py-20">
             <div class="animate-spin inline-block w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full mb-4"></div>
-            <p class="font-black tracking-[0.3em] text-xs uppercase">Processing Request...</p>
+            <p class="font-black tracking-[0.3em] text-xs uppercase text-custom">Processing...</p>
         </div>
 
         <div id="resultContent" class="hidden animate-in fade-in slide-in-from-bottom-5 duration-500">
-            <div id="displayArea" class="glass-card rounded-[3rem] p-6 md:p-12 text-center">
+            <div id="displayArea" class="glass-card rounded-[3rem] p-6 md:p-16 text-center">
                 </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20">
-            <div class="glass-card p-8 rounded-[2.5rem] text-center border-slate-700/30">
-                <i class="fa-solid fa-bolt text-3xl text-indigo-400 mb-4"></i>
-                <h3 class="font-black uppercase tracking-tighter text-sm mb-2">High Speed</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Server API yang dioptimalkan untuk pengunduhan instan dalam hitungan detik.</p>
-            </div>
-            <div class="glass-card p-8 rounded-[2.5rem] text-center border-indigo-500/20">
-                <i class="fa-solid fa-wand-magic-sparkles text-3xl text-indigo-400 mb-4"></i>
-                <h3 class="font-black uppercase tracking-tighter text-sm mb-2">Auto Detect</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Tidak perlu pilih kategori, sistem kami mendeteksi link media sosial secara otomatis.</p>
-            </div>
-            <div class="glass-card p-8 rounded-[2.5rem] text-center border-slate-700/30">
-                <i class="fa-solid fa-shield-halved text-3xl text-indigo-400 mb-4"></i>
-                <h3 class="font-black uppercase tracking-tighter text-sm mb-2">Secure & Free</h3>
-                <p class="text-xs text-slate-400 leading-relaxed">Layanan aman dan gratis selamanya untuk mendownload video HD tanpa watermark.</p>
-            </div>
         </div>
     </main>
 
-    <footer class="text-center py-16 opacity-40 text-[10px] font-bold tracking-[0.5em] uppercase border-t border-slate-800/50 mt-10">
-        © 2024 Faanrky Digital Project • Professional Media Downloader
-    </footer>
-
     <script>
-        // --- THEME ---
+        // THEME LOGIC
         function initTheme() {
             const saved = localStorage.getItem('theme') || 'dark';
             document.body.className = saved;
@@ -137,7 +117,7 @@
         }
         initTheme();
 
-        // --- AD POPUP ---
+        // AD POPUP
         let timeLeft = 5;
         const closeBtn = document.getElementById('closeAdBtn');
         const timer = setInterval(() => {
@@ -145,14 +125,13 @@
             if (timeLeft <= 0) {
                 clearInterval(timer);
                 closeBtn.innerText = "Tutup Sekarang";
-                closeBtn.classList.remove('btn-disabled', 'bg-slate-800', 'text-slate-500');
-                closeBtn.classList.add('bg-indigo-600', 'text-white', 'hover:bg-indigo-500');
+                closeBtn.classList.remove('btn-disabled', 'bg-slate-800', 'text-slate-400');
+                closeBtn.classList.add('bg-indigo-600', 'text-white');
                 closeBtn.disabled = false;
             } else { closeBtn.innerText = `Tunggu (${timeLeft}s)`; }
         }, 1000);
         closeBtn.onclick = () => document.getElementById('adPopup').style.display = 'none';
 
-        // --- SIDEBAR ---
         function toggleSidebar() {
             const sidebar = document.getElementById('sidebar');
             const overlay = document.getElementById('overlay');
@@ -160,89 +139,68 @@
             overlay.style.display = overlay.style.display === 'block' ? 'none' : 'block';
         }
 
-        // --- RESET FUNCTION ---
         function resetInput() {
             document.getElementById('inputUrl').value = '';
             document.getElementById('resultContent').classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            setTimeout(() => document.getElementById('inputUrl').focus(), 500);
         }
 
         const resetBtnHtml = `
-            <div class="mt-12 pt-8 border-t border-slate-800/30">
-                <button onclick="resetInput()" class="flex items-center gap-2 mx-auto text-slate-500 hover:text-indigo-500 transition font-black uppercase tracking-[0.3em] text-[10px]">
+            <div class="mt-12 pt-8 border-t border-slate-800/20">
+                <button onclick="resetInput()" class="flex items-center gap-2 mx-auto text-indigo-500 font-black uppercase tracking-[0.3em] text-[10px]">
                     <i class="fa-solid fa-arrow-left-long"></i> Download Video Lain
                 </button>
             </div>
         `;
 
-        // --- MAIN HANDLER ---
         async function handleProcess() {
             const url = document.getElementById('inputUrl').value;
             const btn = document.getElementById('btnProcess');
             const result = document.getElementById('resultContent');
             const loader = document.getElementById('loader');
-
-            if(!url) return alert("Tempel link TikTok atau Instagram terlebih dahulu!");
-
+            if(!url) return alert("Tempel link!");
             result.classList.add('hidden');
             loader.classList.remove('hidden');
             btn.disabled = true;
 
             try {
-                if(url.includes("tiktok.com")) {
-                    await fetchTikTok(url);
-                } else if(url.includes("instagram.com")) {
-                    await fetchInstagram(url);
-                } else {
-                    alert("Maaf, link tidak dikenali. Gunakan TikTok atau Instagram.");
-                    loader.classList.add('hidden');
-                }
-            } catch (e) {
-                alert("Gagal mengambil data. Server mungkin sedang sibuk.");
-                loader.classList.add('hidden');
-            } finally {
-                btn.disabled = false;
-            }
+                if(url.includes("tiktok.com")) await fetchTikTok(url);
+                else if(url.includes("instagram.com")) await fetchInstagram(url);
+                else alert("Domain tidak didukung!");
+            } catch (e) { alert("Error mengambil data."); } 
+            finally { btn.disabled = false; loader.classList.add('hidden'); }
         }
 
-        // --- TIKTOK LOGIC ---
         async function fetchTikTok(url) {
             const resp = await fetch(`https://api.faanrky.my.id/download/tiktok?url=${encodeURIComponent(url)}`);
             const json = await resp.json();
             const data = json.result.data;
             const display = document.getElementById('displayArea');
-            document.getElementById('loader').classList.add('hidden');
 
             let htmlContent = "";
             if(data.images && data.images.length > 0) {
-                htmlContent = `<h3 class="font-black mb-8 text-indigo-500 uppercase tracking-widest text-xl italic italic">TikTok Photo Mode</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">`;
+                htmlContent = `<h3 class="font-black mb-8 text-indigo-500 uppercase tracking-widest text-xl text-custom italic">TikTok Photo Mode</h3><div class="grid grid-cols-1 sm:grid-cols-2 gap-6">`;
                 data.images.forEach((img, i) => {
-                    htmlContent += `
-                        <div class="glass-card p-4 rounded-3xl overflow-hidden shadow-lg border border-slate-700/50">
-                            <img src="${img}" class="w-full h-56 object-cover rounded-2xl mb-4">
-                            <a href="${img}" target="_blank" class="block bg-indigo-600 hover:bg-indigo-500 text-white text-[10px] py-3 rounded-xl font-black uppercase tracking-widest">Unduh Foto #${i+1}</a>
-                        </div>`;
+                    htmlContent += `<div class="glass-card p-4 rounded-3xl"><img src="${img}" class="w-full h-56 object-cover rounded-2xl mb-4"><a href="${img}" target="_blank" class="block bg-indigo-600 text-white text-[10px] py-3 rounded-xl font-black uppercase">Unduh Foto #${i+1}</a></div>`;
                 });
                 htmlContent += `</div>`;
             } else {
                 htmlContent = `
-                    <div class="max-w-xl mx-auto">
-                        <div class="relative inline-block mb-8">
-                            <img src="${data.cover}" class="w-64 md:w-80 mx-auto rounded-[3rem] shadow-2xl border-4 border-slate-700/50">
+                    <div class="max-w-2xl mx-auto space-y-8">
+                        <img src="${data.cover}" class="w-64 md:w-96 mx-auto rounded-[3.5rem] shadow-2xl border-4 border-indigo-500/20">
+                        <div class="space-y-2">
+                            <h3 class="text-3xl font-black text-custom uppercase tracking-tighter leading-tight px-4">${data.title || 'TikTok Video'}</h3>
+                            <p class="text-indigo-500 font-bold uppercase tracking-[0.3em] text-[12px]">@${data.author.unique_id}</p>
                         </div>
-                        <h3 class="font-black text-2xl mb-2 text-white px-2 leading-tight uppercase tracking-tighter">${data.title || 'TikTok Video'}</h3>
-                        <p class="text-indigo-400 font-bold uppercase tracking-[0.3em] text-[10px] mb-8">By @${data.author.unique_id}</p>
-                        
-                        <div class="flex justify-center gap-6 py-4 border-y border-slate-800/30 mb-8">
-                            <div class="text-center"><p class="text-white font-black">${data.play_count.toLocaleString()}</p><p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Views</p></div>
-                            <div class="text-center"><p class="text-white font-black">${data.digg_count.toLocaleString()}</p><p class="text-[9px] text-slate-500 uppercase font-black tracking-widest">Likes</p></div>
+                        <div class="flex justify-center gap-10 py-6 border-y border-slate-500/10">
+                            <div class="text-center"><p class="text-custom font-black text-lg">${data.play_count.toLocaleString()}</p><p class="text-[9px] text-slate-500 uppercase font-black">Views</p></div>
+                            <div class="text-center"><p class="text-custom font-black text-lg">${data.digg_count.toLocaleString()}</p><p class="text-[9px] text-slate-500 uppercase font-black">Likes</p></div>
+                            <div class="text-center"><p class="text-custom font-black text-lg">${data.share_count.toLocaleString()}</p><p class="text-[9px] text-slate-500 uppercase font-black">Shares</p></div>
                         </div>
-
-                        <div class="flex flex-col gap-4">
-                            <a href="${data.play}" target="_blank" class="bg-slate-800 hover:bg-slate-700 py-5 rounded-2xl font-black transition uppercase tracking-widest text-xs">Download Normal Quality</a>
-                            <a href="${data.hdplay}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 py-5 rounded-2xl font-black shadow-lg shadow-indigo-500/30 transition uppercase tracking-[0.2em] text-sm">Download HD Quality</a>
-                            <a href="${data.music}" target="_blank" class="text-slate-500 text-xs mt-4 font-bold uppercase tracking-widest hover:text-indigo-400 transition"><i class="fa-solid fa-music mr-2"></i>Download Music MP3</a>
+                        <div class="flex flex-col gap-4 px-4 md:px-10">
+                            <a href="${data.play}" target="_blank" class="bg-slate-800 hover:bg-slate-700 py-5 rounded-2xl font-black text-white uppercase tracking-widest text-xs transition">Download Normal</a>
+                            <a href="${data.hdplay}" target="_blank" class="bg-indigo-600 hover:bg-indigo-500 py-6 rounded-2xl font-black text-white shadow-lg shadow-indigo-500/30 uppercase tracking-[0.2em] text-sm transition">Download HD Video</a>
+                            <a href="${data.music}" target="_blank" class="text-slate-500 font-bold uppercase tracking-widest hover:text-indigo-400 transition text-[10px] italic"><i class="fa-solid fa-music mr-2"></i>Download MP3</a>
                         </div>
                     </div>`;
             }
@@ -250,41 +208,23 @@
             document.getElementById('resultContent').classList.remove('hidden');
         }
 
-        // --- INSTAGRAM LOGIC ---
         async function fetchInstagram(url) {
             const resp = await fetch(`https://api.faanrky.my.id/download/ig?url=${encodeURIComponent(url)}`);
             const json = await resp.json();
             const display = document.getElementById('displayArea');
-            document.getElementById('loader').classList.add('hidden');
-
             let htmlContent = "";
             if(json.data && json.data.length > 0) {
                 if(json.data.length === 1) {
-                    htmlContent = `
-                        <div class="max-w-md mx-auto py-10">
-                            <div class="w-24 h-24 bg-indigo-600/10 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
-                                <i class="fa-brands fa-instagram text-5xl text-indigo-500"></i>
-                            </div>
-                            <h3 class="font-black text-3xl mb-2 uppercase tracking-tighter text-white leading-none">InstagramDL</h3>
-                            <p class="text-slate-500 text-[10px] mb-10 uppercase font-bold tracking-[0.5em]">Content Ready</p>
-                            <a href="${json.data[0]}" target="_blank" class="block bg-indigo-600 hover:bg-indigo-500 text-white py-6 rounded-2xl font-black shadow-xl shadow-indigo-500/30 uppercase tracking-[0.2em]">Download Content</a>
-                        </div>`;
+                    htmlContent = `<div class="max-w-md mx-auto py-10"><div class="w-24 h-24 bg-indigo-600/10 rounded-full flex items-center justify-center mx-auto mb-8"><i class="fa-brands fa-instagram text-5xl text-indigo-500"></i></div><h3 class="font-black text-3xl mb-10 text-custom uppercase tracking-tighter italic">InstagramDL</h3><a href="${json.data[0]}" target="_blank" class="block bg-indigo-600 text-white py-6 rounded-2xl font-black uppercase tracking-[0.2em]">Download Content</a></div>`;
                 } else {
-                    htmlContent = `<h3 class="font-black mb-10 italic uppercase tracking-tighter text-indigo-500 text-2xl">Instagram Gallery</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">`;
+                    htmlContent = `<h3 class="font-black mb-10 italic uppercase text-indigo-500 text-2xl">Instagram Gallery</h3><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">`;
                     json.data.forEach((link, i) => {
-                        htmlContent += `
-                            <div class="glass-card p-6 rounded-[2.5rem] text-center border-slate-700/30 hover:border-indigo-500 transition">
-                                <i class="fa-solid fa-file-arrow-down text-indigo-500 text-3xl mb-4"></i>
-                                <p class="text-[10px] font-black text-slate-500 mb-6 uppercase tracking-widest italic">Slide #${i+1}</p>
-                                <a href="${link}" target="_blank" class="block bg-slate-800 hover:bg-indigo-600 text-white py-4 rounded-xl font-black transition text-[10px] uppercase tracking-widest">Download</a>
-                            </div>`;
+                        htmlContent += `<div class="glass-card p-6 rounded-[2.5rem]"><i class="fa-solid fa-file-arrow-down text-indigo-500 text-3xl mb-4"></i><p class="text-[10px] font-black text-slate-500 mb-6 uppercase">Slide #${i+1}</p><a href="${link}" target="_blank" class="block bg-slate-800 hover:bg-indigo-600 text-white py-4 rounded-xl font-black transition text-[10px] uppercase">Download</a></div>`;
                     });
                     htmlContent += `</div>`;
                 }
                 display.innerHTML = htmlContent + resetBtnHtml;
                 document.getElementById('resultContent').classList.remove('hidden');
-            } else {
-                alert("Konten Instagram tidak ditemukan atau bersifat Private.");
             }
         }
     </script>
