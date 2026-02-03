@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Character Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { background-color: #0f172a; color: #e2e8f0; }
+        .glass { background: rgba(30, 41, 59, 0.7); backdrop-filter: blur(12px); }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+        .bubble-user { background: #334155; border-radius: 18px 18px 4px 18px; }
+        .bubble-ai { background: #1e293b; border: 1px solid #334155; border-radius: 18px 18px 18px 4px; }
+    </style>
+</head>
+<body class="h-screen overflow-hidden flex font-sans">
+
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-64 glass z-50 transform -translate-x-full transition-transform duration-300 border-r border-slate-700">
+        <div class="p-6">
+            <h2 class="text-xl font-bold mb-8 text-white">Menu</h2>
+            <nav class="space-y-4">
+                <a href="#" class="flex items-center space-x-3 p-2 hover:bg-slate-700 rounded-lg transition">
+                    <i data-lucide="home" class="w-5 h-5"></i> <span>Kembali ke Web</span>
+                </a>
+                <a href="#" class="flex items-center space-x-3 p-2 hover:bg-slate-700 rounded-lg transition">
+                    <i data-lucide="settings" class="w-5 h-5"></i> <span>Layanan Lain</span>
+                </a>
+                <button onclick="openPopup()" class="flex items-center space-x-3 p-2 w-full hover:bg-slate-700 rounded-lg transition text-left">
+                    <i data-lucide="refresh-cw" class="w-5 h-5"></i> <span>Ganti Karakter</span>
+                </button>
+            </nav>
+        </div>
+    </div>
+
+    <div class="flex-1 flex flex-col h-full relative">
+        <header class="p-4 glass border-b border-slate-700 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleSidebar()" class="p-2 hover:bg-slate-800 rounded-full">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="flex items-center space-x-3" id="current-char-info">
+                    <img id="header-img" src="" class="w-10 h-10 rounded-full object-cover border border-slate-600 hidden">
+                    <div>
+                        <h1 id="header-name" class="font-semibold text-white">Pilih Karakter</h1>
+                        <p class="text-xs text-green-400">Online</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <main id="chat-container" class="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+            </main>
+
+        <footer class="p-4 glass border-t border-slate-700">
+            <div class="max-w-4xl mx-auto flex items-center space-x-2">
+                <input type="text" id="user-input" placeholder="Ketik pesan..." 
+                    class="flex-1 bg-slate-800 border border-slate-700 rounded-full py-3 px-6 focus:outline-none focus:border-slate-500 transition">
+                <button onclick="sendMessage()" class="bg-indigo-600 hover:bg-indigo-500 p-3 rounded-full transition">
+                    <i data-lucide="send-horizontal" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </footer>
+    </div>
+
+    <div id="popup" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4">
+        <div class="bg-slate-900 border border-slate-700 w-full max-w-md rounded-2xl p-6 shadow-2xl">
+            <h2 class="text-2xl font-bold mb-4 text-center">Pilih Karakter</h2>
+            
+            <input type="text" id="session-key" placeholder="Masukkan Session Key" 
+                class="w-full bg-slate-800 border border-slate-700 rounded-lg py-3 px-4 mb-4 focus:outline-none focus:border-indigo-500">
+
+            <div class="grid grid-cols-2 gap-4" id="char-list">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        const categories = {
+            "char": [
+                { name: "Hu Tao", keyword: "hutao", image: "https://i.pinimg.com/736x/8d/d5/4b/8dd54ba2904573887c91a788c1b69512.jpg" },
+                { name: "Zhao", keyword: "zhao", image: "https://i.pinimg.com/736x/1a/10/7b/1a107b36f7311f44053e1f0e42d72619.jpg" }
+            ]
+        };
+
+        let activeChar = null;
+        let sessionKey = "";
+
+        // Initialize Icons
+        lucide.createIcons();
+
+        // Load Karakter ke Popup
+        const charList = document.getElementById('char-list');
+        categories.char.forEach(char => {
+            const div = document.createElement('div');
+            div.className = "cursor-pointer group text-center";
+            div.onclick = () => selectChar(char);
+            div.innerHTML = `
+                <div class="relative overflow-hidden rounded-xl mb-2 border-2 border-transparent group-hover:border-indigo-500 transition">
+                    <img src="${char.image}" class="w-full h-32 object-cover">
+                </div>
+                <p class="font-medium">${char.name}</p>
+            `;
+            charList.appendChild(div);
+        });
+
+        function selectChar(char) {
+            const key = document.getElementById('session-key').value;
+            if(!key) return alert("Harap isi session key!");
+            
+            sessionKey = key;
+            activeChar = char;
+
+            // Update Header
+            document.getElementById('header-name').innerText = char.name;
+            document.getElementById('header-img').src = char.image;
+            document.getElementById('header-img').classList.remove('hidden');
+            
+            // Close Popup
+            document.getElementById('popup').classList.add('hidden');
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('-translate-x-full');
+        }
+
+        function openPopup() {
+            document.getElementById('popup').classList.remove('hidden');
+            toggleSidebar();
+        }
+
+        function appendMessage(sender, text, img = null) {
+            const chatContainer = document.getElementById('chat-container');
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex ${sender === 'user' ? 'justify-end' : 'justify-start'} animate-fade-in`;
+            
+            const content = `
+                <div class="flex max-w-[80%] ${sender === 'user' ? 'flex-row-reverse' : 'flex-row'} items-end space-x-2">
+                    <div class="${sender === 'user' ? 'bubble-user ml-2' : 'bubble-ai mr-2'} p-3 px-4 text-sm shadow-sm">
+                        ${text}
+                    </div>
+                </div>
+            `;
+            
+            wrapper.innerHTML = content;
+            chatContainer.appendChild(wrapper);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const text = input.value.trim();
+            
+            if(!text || !activeChar) return;
+
+            // User Chat
+            appendMessage('user', text);
+            input.value = '';
+
+            // Loading state (optional)
+            try {
+                const response = await fetch(`https://api.faanrky.my.id/c/${activeChar.keyword}?s=${sessionKey}&text=${encodeURIComponent(text)}`);
+                const data = await response.json();
+                
+                if(data.status) {
+                    appendMessage('ai', data.result);
+                } else {
+                    appendMessage('ai', "Error: Gagal mengambil respon.");
+                }
+            } catch (err) {
+                appendMessage('ai', "Error: Coba lagi nanti.");
+            }
+        }
+
+        // Enter Key Listener
+        document.getElementById('user-input').addEventListener('keypress', (e) => {
+            if(e.key === 'Enter') sendMessage();
+        });
+    </script>
+</body>
+                  </html>
+  
