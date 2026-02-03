@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Minimal AI Chat</title>
+    <title>Minimal AI Chat v2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -13,92 +13,124 @@
             background-color: #000000; 
             color: #ffffff;
             height: 100vh;
-            display: flex;
-            flex-direction: column;
+            margin: 0;
+            display: grid;
+            grid-template-rows: 64px 1fr auto; /* Header, Chat, Input */
             overflow: hidden;
         }
-        .glass-header { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
-        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
-        
-        /* Bubble Chat Minimalis */
-        .bubble-user { align-self: flex-end; background: #ffffff; color: #000000; padding: 10px 16px; border-radius: 20px 20px 4px 20px; max-width: 80%; font-size: 0.9rem; font-weight: 500; }
-        .bubble-ai { align-self: flex-start; background: #111111; border: 1px solid #333; color: #ffffff; padding: 10px 16px; border-radius: 20px 20px 20px 4px; max-width: 80%; font-size: 0.9rem; }
-        
-        .input-area { padding: 16px; background: #000; border-top: 1px solid #222; }
-        input::placeholder { color: #555; }
-        
-        /* Modal & Sidebar */
-        .modal-bg { background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
-        .sidebar { background: #000; border-right: 1px solid #222; transform: translateX(-100%); transition: 0.3s; }
+
+        /* Chat Area */
+        #chat-container {
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        /* Bubble Chat */
+        .bubble-user { align-self: flex-end; background: #ffffff; color: #000000; padding: 12px 18px; border-radius: 20px 20px 4px 20px; max-width: 80%; font-size: 0.9rem; font-weight: 500; }
+        .bubble-ai { align-self: flex-start; background: #111111; border: 1px solid #333; color: #ffffff; padding: 12px 18px; border-radius: 20px 20px 20px 4px; max-width: 80%; font-size: 0.9rem; }
+
+        /* Input Section - Dipastikan Selalu Ada */
+        .input-wrapper {
+            background: #000000;
+            border-top: 1px solid #222;
+            padding: 16px 20px 30px 20px; /* Padding bawah ekstra untuk mobile */
+        }
+
+        .input-box {
+            background: #111;
+            border: 1px solid #333;
+            border-radius: 999px;
+            display: flex;
+            align-items: center;
+            padding: 4px 16px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        input {
+            flex: 1;
+            background: transparent;
+            border: none;
+            color: white;
+            padding: 12px 0;
+            outline: none;
+            font-size: 0.95rem;
+        }
+
+        /* Modal / Popups */
+        .modal-bg { background: rgba(0,0,0,1); z-index: 100; position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; }
+        .sidebar { background: #000; border-right: 1px solid #222; position: fixed; inset-y: 0; left: 0; w: 260px; z-index: 80; transform: translateX(-100%); transition: 0.3s; }
         .sidebar.active { transform: translateX(0); }
     </style>
 </head>
 <body>
 
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-64 z-50 sidebar flex flex-col p-6">
-        <button onclick="toggleSidebar()" class="self-end mb-8"><i data-lucide="x"></i></button>
-        <nav class="space-y-6">
-            <a href="#" class="block text-lg hover:text-gray-400">Website Utama</a>
-            <a href="#" class="block text-lg hover:text-gray-400">Portfolio</a>
-            <button onclick="showSetup()" class="block text-lg text-left hover:text-gray-400 w-full">Ganti Sesi/Karakter</button>
+    <div id="sidebar" class="sidebar flex flex-col p-6 shadow-2xl">
+        <button onclick="toggleSidebar()" class="mb-10 text-gray-500 hover:text-white transition"><i data-lucide="x"></i></button>
+        <nav class="space-y-8">
+            <a href="#" class="block text-xl font-medium">Home</a>
+            <a href="#" class="block text-xl font-medium">History</a>
+            <button onclick="showSetup()" class="block text-xl font-medium text-left w-full text-indigo-400">Ganti Karakter</button>
         </nav>
     </div>
 
-    <header class="h-16 flex items-center justify-between px-6 glass-header shrink-0">
+    <header class="flex items-center justify-between px-6 bg-black/80 backdrop-blur-md border-b border-white/10">
         <div class="flex items-center gap-4">
-            <button onclick="toggleSidebar()"><i data-lucide="align-left" class="w-5 h-5"></i></button>
-            <div id="chat-identity" class="flex items-center gap-3 hidden">
-                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
-                    <i data-lucide="bot" class="w-5 h-5 text-black"></i>
-                </div>
-                <span id="display-name" class="font-bold text-sm tracking-tight uppercase"></span>
+            <button onclick="toggleSidebar()" class="hover:opacity-70 transition"><i data-lucide="menu" class="w-6 h-6"></i></button>
+            <div id="header-id" class="hidden flex items-center gap-2">
+                <span id="display-name" class="font-bold text-xs uppercase tracking-widest text-gray-400"></span>
+                <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span>
             </div>
         </div>
-        <button onclick="toggleKeywordList()" class="text-[10px] border border-white/20 px-2 py-1 rounded hover:bg-white hover:text-black transition">
-            CHAR LIST
+        <button onclick="toggleKeywordList()" class="text-[10px] font-bold border border-white/20 px-3 py-1 rounded-full hover:bg-white hover:text-black transition uppercase tracking-tighter">
+            List Karakter
         </button>
     </header>
 
-    <main id="chat-container" class="chat-container">
-        <div class="text-center text-gray-600 text-xs my-10" id="empty-state">Mulai percakapan baru...</div>
+    <main id="chat-container">
+        <div class="text-center text-gray-700 text-xs mt-20" id="empty-state">Ketik sesuatu untuk memulai...</div>
     </main>
 
-    <footer class="input-area shrink-0">
-        <div class="max-w-3xl mx-auto flex items-center gap-3 bg-[#111] border border-[#333] rounded-full px-5 py-2">
-            <input type="text" id="user-input" class="flex-1 bg-transparent outline-none text-sm py-2" placeholder="Tulis sesuatu...">
-            <button onclick="sendMessage()" class="text-white hover:scale-110 transition"><i data-lucide="arrow-up-circle"></i></button>
+    <footer class="input-wrapper">
+        <div class="input-box">
+            <input type="text" id="user-input" placeholder="Tulis pesan..." autocomplete="off">
+            <button onclick="sendMessage()" class="ml-2 text-white hover:text-indigo-400 transition">
+                <i data-lucide="arrow-up-circle" class="w-7 h-7"></i>
+            </button>
         </div>
     </footer>
 
-    <div id="setup-modal" class="fixed inset-0 z-[60] modal-bg flex items-center justify-center p-6">
-        <div class="w-full max-w-xs space-y-8">
+    <div id="setup-modal" class="modal-bg p-6">
+        <div class="w-full max-w-xs space-y-10">
             <div class="text-center">
-                <h1 class="text-2xl font-bold tracking-tighter">AI INTERFACE</h1>
-                <p class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Faanrky Version</p>
+                <h1 class="text-3xl font-bold tracking-tighter">FAANRKY AI</h1>
+                <p class="text-gray-500 text-[10px] mt-2 uppercase tracking-[0.3em]">Black & White Minimalist</p>
             </div>
-            
-            <div class="space-y-4">
-                <div>
-                    <label class="text-[10px] uppercase text-gray-500 font-bold ml-1">Session Key</label>
-                    <input type="text" id="input-session" class="w-full bg-transparent border-b border-gray-800 py-3 px-1 outline-none focus:border-white transition text-sm" placeholder="Masukkan Sesi...">
+            <div class="space-y-6">
+                <div class="group">
+                    <label class="text-[10px] uppercase text-gray-600 font-bold ml-1">Session Key</label>
+                    <input type="text" id="input-session" class="w-full bg-transparent border-b border-gray-800 py-3 px-1 outline-none focus:border-white transition text-sm" placeholder="Contoh: faanrky_01">
                 </div>
                 <div>
-                    <label class="text-[10px] uppercase text-gray-500 font-bold ml-1">Karakter Keyword</label>
+                    <label class="text-[10px] uppercase text-gray-600 font-bold ml-1">Karakter Keyword</label>
                     <input type="text" id="input-keyword" class="w-full bg-transparent border-b border-gray-800 py-3 px-1 outline-none focus:border-white transition text-sm" placeholder="Contoh: hutao">
                 </div>
-                <button onclick="startChat()" class="w-full bg-white text-black font-bold py-4 rounded-full mt-4 hover:bg-gray-200 transition text-xs tracking-widest uppercase">
-                    Masuk Ke Chat
+                <button onclick="startChat()" class="w-full bg-white text-black font-bold py-4 rounded-xl mt-4 hover:bg-gray-200 transition text-xs tracking-widest uppercase">
+                    Mulai Chat
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="keyword-modal" class="fixed inset-0 z-[70] bg-black/80 hidden flex items-center justify-center p-6" onclick="toggleKeywordList()">
-        <div class="bg-[#111] border border-[#333] p-6 rounded-2xl w-full max-w-xs" onclick="event.stopPropagation()">
-            <h4 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-widest">Available Keywords</h4>
-            <div id="keyword-list-content" class="space-y-3">
+    <div id="keyword-modal" class="fixed inset-0 z-[110] bg-black/90 hidden flex items-center justify-center p-6" onclick="toggleKeywordList()">
+        <div class="bg-[#111] border border-[#333] p-8 rounded-3xl w-full max-w-xs shadow-2xl" onclick="event.stopPropagation()">
+            <h4 class="text-[10px] font-bold text-gray-500 uppercase mb-6 tracking-widest">Available Keywords</h4>
+            <div id="keyword-list-content" class="space-y-4">
                 </div>
-            <button onclick="toggleKeywordList()" class="mt-6 w-full text-[10px] text-gray-500 uppercase">Tutup</button>
+            <button onclick="toggleKeywordList()" class="mt-8 w-full text-[10px] text-gray-600 uppercase font-bold">Close</button>
         </div>
     </div>
 
@@ -115,12 +147,12 @@
 
         lucide.createIcons();
 
-        // Render Keyword List Info
+        // Load List Karakter
         const listContent = document.getElementById('keyword-list-content');
         categories.char.forEach(c => {
             const item = document.createElement('div');
-            item.className = "flex justify-between border-b border-[#222] pb-2";
-            item.innerHTML = `<span class="text-sm">${c.name}</span> <code class="text-xs text-gray-500 bg-[#222] px-2 rounded">${c.keyword}</code>`;
+            item.className = "flex justify-between items-center border-b border-[#222] pb-3";
+            item.innerHTML = `<span class="text-sm font-medium">${c.name}</span> <code class="text-[10px] text-white bg-[#333] px-2 py-0.5 rounded">${c.keyword}</code>`;
             listContent.appendChild(item);
         });
 
@@ -128,35 +160,26 @@
             const s = document.getElementById('input-session').value.trim();
             const k = document.getElementById('input-keyword').value.trim().toLowerCase();
 
-            if (!s || !k) return alert("Lengkapi data dulu bos!");
+            if (!s || !k) return alert("Wajib isi data!");
 
             sessionKey = s;
             characterKeyword = k;
 
-            // Cari nama display dari keyword
             const found = categories.char.find(c => c.keyword === k);
             document.getElementById('display-name').innerText = found ? found.name : k;
 
-            document.getElementById('setup-modal').classList.add('hidden');
-            document.getElementById('chat-identity').classList.remove('hidden');
+            document.getElementById('setup-modal').style.display = 'none';
+            document.getElementById('header-id').classList.remove('hidden');
         }
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('active');
-        }
-
-        function toggleKeywordList() {
-            document.getElementById('keyword-modal').classList.toggle('hidden');
-        }
-
-        function showSetup() {
-            document.getElementById('setup-modal').classList.remove('hidden');
-            toggleSidebar();
-        }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('active'); }
+        function toggleKeywordList() { document.getElementById('keyword-modal').classList.toggle('hidden'); }
+        function showSetup() { document.getElementById('setup-modal').style.display = 'flex'; toggleSidebar(); }
 
         function appendMessage(sender, text) {
             const container = document.getElementById('chat-container');
-            document.getElementById('empty-state').style.display = 'none';
+            const empty = document.getElementById('empty-state');
+            if(empty) empty.remove();
             
             const div = document.createElement('div');
             div.className = sender === 'user' ? 'bubble-user' : 'bubble-ai';
@@ -179,10 +202,10 @@
                 if (data.status) {
                     appendMessage('ai', data.result);
                 } else {
-                    appendMessage('ai', "Sistem Error.");
+                    appendMessage('ai', "Error dari API.");
                 }
             } catch (e) {
-                appendMessage('ai', "Gagal terhubung ke API.");
+                appendMessage('ai', "Gagal terhubung ke server.");
             }
         }
 
