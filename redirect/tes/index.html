@@ -3,197 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AI Chat Frontend</title>
+    <title>Minimal AI Chat</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Paksa body untuk tidak bisa scroll, yang scroll hanya chat-container */
-        html, body { 
-            height: 100%; 
-            margin: 0; 
-            padding: 0; 
-            overflow: hidden; 
-            background-color: #0b0f1a;
-            color: #e2e8f0;
-        }
-
-        .chat-area {
-            flex: 1;
-            overflow-y: auto;
-            padding: 1rem;
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #000000; 
+            color: #ffffff;
+            height: 100vh;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            overflow: hidden;
         }
-
-        .bubble-user { 
-            align-self: flex-end;
-            background: #334155; 
-            padding: 10px 16px;
-            border-radius: 18px 18px 4px 18px;
-            max-width: 85%;
-            font-size: 0.95rem;
-        }
-
-        .bubble-ai { 
-            align-self: flex-start;
-            background: #1e293b; 
-            border: 1px solid #334155;
-            padding: 10px 16px;
-            border-radius: 18px 18px 18px 4px;
-            max-width: 85%;
-            font-size: 0.95rem;
-        }
-
-        .input-container {
-            padding: 1rem;
-            background: #0f172a;
-            border-top: 1px solid #1e293b;
-        }
+        .glass-header { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(10px); border-bottom: 1px solid #222; }
+        .chat-container { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 16px; }
+        
+        /* Bubble Chat Minimalis */
+        .bubble-user { align-self: flex-end; background: #ffffff; color: #000000; padding: 10px 16px; border-radius: 20px 20px 4px 20px; max-width: 80%; font-size: 0.9rem; font-weight: 500; }
+        .bubble-ai { align-self: flex-start; background: #111111; border: 1px solid #333; color: #ffffff; padding: 10px 16px; border-radius: 20px 20px 20px 4px; max-width: 80%; font-size: 0.9rem; }
+        
+        .input-area { padding: 16px; background: #000; border-top: 1px solid #222; }
+        input::placeholder { color: #555; }
+        
+        /* Modal & Sidebar */
+        .modal-bg { background: rgba(0,0,0,0.95); backdrop-filter: blur(5px); }
+        .sidebar { background: #000; border-right: 1px solid #222; transform: translateX(-100%); transition: 0.3s; }
+        .sidebar.active { transform: translateX(0); }
     </style>
 </head>
-<body class="flex flex-col">
+<body>
 
-    <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-slate-900 z-50 transform -translate-x-full transition-transform duration-300 border-r border-slate-800 shadow-2xl">
-        <div class="p-6">
-            <h2 class="text-xl font-bold mb-6 text-white">Menu</h2>
-            <nav class="space-y-3">
-                <a href="#" class="flex items-center space-x-3 p-3 hover:bg-slate-800 rounded-xl transition">
-                    <i data-lucide="arrow-left" class="w-5 h-5"></i> <span>Kembali</span>
-                </a>
-                <button onclick="openPopup()" class="flex items-center space-x-3 p-3 w-full hover:bg-slate-800 rounded-xl transition text-left">
-                    <i data-lucide="users" class="w-5 h-5"></i> <span>Ganti Karakter</span>
-                </button>
-            </nav>
-        </div>
+    <div id="sidebar" class="fixed inset-y-0 left-0 w-64 z-50 sidebar flex flex-col p-6">
+        <button onclick="toggleSidebar()" class="self-end mb-8"><i data-lucide="x"></i></button>
+        <nav class="space-y-6">
+            <a href="#" class="block text-lg hover:text-gray-400">Website Utama</a>
+            <a href="#" class="block text-lg hover:text-gray-400">Portfolio</a>
+            <button onclick="showSetup()" class="block text-lg text-left hover:text-gray-400 w-full">Ganti Sesi/Karakter</button>
+        </nav>
     </div>
 
-    <header class="h-16 flex items-center px-4 bg-slate-900 border-b border-slate-800 shrink-0">
-        <button onclick="toggleSidebar()" class="p-2 mr-3 hover:bg-slate-800 rounded-lg">
-            <i data-lucide="menu"></i>
-        </button>
-        <div id="char-header" class="flex items-center space-x-3 hidden">
-            <img id="header-img" class="w-10 h-10 rounded-full object-cover border border-slate-700">
-            <div>
-                <p id="header-name" class="font-bold text-sm"></p>
-                <p class="text-[10px] text-green-500 font-bold uppercase tracking-wider">Online</p>
+    <header class="h-16 flex items-center justify-between px-6 glass-header shrink-0">
+        <div class="flex items-center gap-4">
+            <button onclick="toggleSidebar()"><i data-lucide="align-left" class="w-5 h-5"></i></button>
+            <div id="chat-identity" class="flex items-center gap-3 hidden">
+                <div class="w-8 h-8 rounded-full bg-white flex items-center justify-center">
+                    <i data-lucide="bot" class="w-5 h-5 text-black"></i>
+                </div>
+                <span id="display-name" class="font-bold text-sm tracking-tight uppercase"></span>
             </div>
         </div>
-        <p id="header-wait" class="text-slate-500 text-sm italic font-medium">Menunggu Karakter...</p>
+        <button onclick="toggleKeywordList()" class="text-[10px] border border-white/20 px-2 py-1 rounded hover:bg-white hover:text-black transition">
+            CHAR LIST
+        </button>
     </header>
 
-    <div id="chat-container" class="chat-area">
-        </div>
+    <main id="chat-container" class="chat-container">
+        <div class="text-center text-gray-600 text-xs my-10" id="empty-state">Mulai percakapan baru...</div>
+    </main>
 
-    <div class="input-container shrink-0">
-        <div class="max-w-4xl mx-auto flex items-center bg-slate-800 rounded-2xl p-1 border border-slate-700 shadow-inner">
-            <input type="text" id="user-input" 
-                class="flex-1 bg-transparent py-3 px-4 outline-none text-white text-sm" 
-                placeholder="Tulis pesan..." 
-                autocomplete="off">
-            <button onclick="sendMessage()" class="bg-indigo-600 hover:bg-indigo-500 text-white p-3 rounded-xl transition-all active:scale-95">
-                <i data-lucide="send-horizontal" class="w-5 h-5"></i>
-            </button>
+    <footer class="input-area shrink-0">
+        <div class="max-w-3xl mx-auto flex items-center gap-3 bg-[#111] border border-[#333] rounded-full px-5 py-2">
+            <input type="text" id="user-input" class="flex-1 bg-transparent outline-none text-sm py-2" placeholder="Tulis sesuatu...">
+            <button onclick="sendMessage()" class="text-white hover:scale-110 transition"><i data-lucide="arrow-up-circle"></i></button>
+        </div>
+    </footer>
+
+    <div id="setup-modal" class="fixed inset-0 z-[60] modal-bg flex items-center justify-center p-6">
+        <div class="w-full max-w-xs space-y-8">
+            <div class="text-center">
+                <h1 class="text-2xl font-bold tracking-tighter">AI INTERFACE</h1>
+                <p class="text-gray-500 text-xs mt-2 uppercase tracking-widest">Faanrky Version</p>
+            </div>
+            
+            <div class="space-y-4">
+                <div>
+                    <label class="text-[10px] uppercase text-gray-500 font-bold ml-1">Session Key</label>
+                    <input type="text" id="input-session" class="w-full bg-transparent border-b border-gray-800 py-3 px-1 outline-none focus:border-white transition text-sm" placeholder="Masukkan Sesi...">
+                </div>
+                <div>
+                    <label class="text-[10px] uppercase text-gray-500 font-bold ml-1">Karakter Keyword</label>
+                    <input type="text" id="input-keyword" class="w-full bg-transparent border-b border-gray-800 py-3 px-1 outline-none focus:border-white transition text-sm" placeholder="Contoh: hutao">
+                </div>
+                <button onclick="startChat()" class="w-full bg-white text-black font-bold py-4 rounded-full mt-4 hover:bg-gray-200 transition text-xs tracking-widest uppercase">
+                    Masuk Ke Chat
+                </button>
+            </div>
         </div>
     </div>
 
-    <div id="popup" class="fixed inset-0 bg-black/80 flex items-center justify-center z-[60] p-4 backdrop-blur-sm">
-        <div class="bg-slate-900 border border-slate-700 w-full max-w-sm rounded-3xl p-6 shadow-2xl">
-            <h3 class="text-xl font-bold mb-4 text-center">Setup Chat</h3>
-            
-            <label class="text-xs text-slate-400 ml-1">Session Key</label>
-            <input type="text" id="session-key" placeholder="Contoh: faanrky123" 
-                class="w-full bg-slate-800 border border-slate-700 rounded-xl py-3 px-4 mb-6 mt-1 focus:ring-2 focus:ring-indigo-500 outline-none text-white">
-
-            <p class="text-xs text-slate-400 mb-2 ml-1">Pilih Karakter</p>
-            <div class="grid grid-cols-2 gap-4" id="char-list">
+    <div id="keyword-modal" class="fixed inset-0 z-[70] bg-black/80 hidden flex items-center justify-center p-6" onclick="toggleKeywordList()">
+        <div class="bg-[#111] border border-[#333] p-6 rounded-2xl w-full max-w-xs" onclick="event.stopPropagation()">
+            <h4 class="text-xs font-bold text-gray-500 uppercase mb-4 tracking-widest">Available Keywords</h4>
+            <div id="keyword-list-content" class="space-y-3">
                 </div>
+            <button onclick="toggleKeywordList()" class="mt-6 w-full text-[10px] text-gray-500 uppercase">Tutup</button>
         </div>
     </div>
 
     <script>
         const categories = {
             "char": [
-                { name: "Hu Tao", keyword: "hutao", image: "https://i.pinimg.com/736x/8d/d5/4b/8dd54ba2904573887c91a788c1b69512.jpg" },
-                { name: "Zhao", keyword: "zhao", image: "https://i.pinimg.com/736x/1a/10/7b/1a107b36f7311f44053e1f0e42d72619.jpg" }
+                { name: "Hu Tao", keyword: "hutao" },
+                { name: "Zhao", keyword: "zhao" }
             ]
         };
 
-        let activeChar = null;
         let sessionKey = "";
+        let characterKeyword = "";
 
         lucide.createIcons();
 
-        // Render Karakter ke Popup
-        const charList = document.getElementById('char-list');
-        categories.char.forEach(char => {
-            const div = document.createElement('div');
-            div.className = "cursor-pointer text-center";
-            div.onclick = () => selectChar(char);
-            div.innerHTML = `
-                <div class="aspect-square rounded-2xl overflow-hidden border-2 border-slate-700 hover:border-indigo-500 transition">
-                    <img src="${char.image}" class="w-full h-full object-cover">
-                </div>
-                <p class="mt-2 text-xs font-bold">${char.name}</p>
-            `;
-            charList.appendChild(div);
+        // Render Keyword List Info
+        const listContent = document.getElementById('keyword-list-content');
+        categories.char.forEach(c => {
+            const item = document.createElement('div');
+            item.className = "flex justify-between border-b border-[#222] pb-2";
+            item.innerHTML = `<span class="text-sm">${c.name}</span> <code class="text-xs text-gray-500 bg-[#222] px-2 rounded">${c.keyword}</code>`;
+            listContent.appendChild(item);
         });
 
-        function selectChar(char) {
-            const key = document.getElementById('session-key').value.trim();
-            if(!key) return alert("Harap isi Session Key!");
-            
-            sessionKey = key;
-            activeChar = char;
+        function startChat() {
+            const s = document.getElementById('input-session').value.trim();
+            const k = document.getElementById('input-keyword').value.trim().toLowerCase();
 
-            document.getElementById('header-wait').classList.add('hidden');
-            document.getElementById('char-header').classList.remove('hidden');
-            document.getElementById('header-name').innerText = char.name;
-            document.getElementById('header-img').src = char.image;
-            document.getElementById('popup').classList.add('hidden');
+            if (!s || !k) return alert("Lengkapi data dulu bos!");
+
+            sessionKey = s;
+            characterKeyword = k;
+
+            // Cari nama display dari keyword
+            const found = categories.char.find(c => c.keyword === k);
+            document.getElementById('display-name').innerText = found ? found.name : k;
+
+            document.getElementById('setup-modal').classList.add('hidden');
+            document.getElementById('chat-identity').classList.remove('hidden');
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
+            document.getElementById('sidebar').classList.toggle('active');
         }
 
-        function openPopup() {
-            document.getElementById('popup').classList.remove('hidden');
-            if(!document.getElementById('sidebar').classList.contains('-translate-x-full')) toggleSidebar();
+        function toggleKeywordList() {
+            document.getElementById('keyword-modal').classList.toggle('hidden');
+        }
+
+        function showSetup() {
+            document.getElementById('setup-modal').classList.remove('hidden');
+            toggleSidebar();
         }
 
         function appendMessage(sender, text) {
-            const chatContainer = document.getElementById('chat-container');
+            const container = document.getElementById('chat-container');
+            document.getElementById('empty-state').style.display = 'none';
+            
             const div = document.createElement('div');
             div.className = sender === 'user' ? 'bubble-user' : 'bubble-ai';
             div.innerText = text;
-            chatContainer.appendChild(div);
-            chatContainer.scrollTop = chatContainer.scrollHeight;
+            container.appendChild(div);
+            container.scrollTop = container.scrollHeight;
         }
 
         async function sendMessage() {
             const input = document.getElementById('user-input');
             const msg = input.value.trim();
-            if(!msg || !activeChar) return;
+            if (!msg || !characterKeyword) return;
 
             appendMessage('user', msg);
             input.value = '';
 
             try {
-                const response = await fetch(`https://api.faanrky.my.id/c/${activeChar.keyword}?s=${sessionKey}&text=${encodeURIComponent(msg)}`);
+                const response = await fetch(`https://api.faanrky.my.id/c/${characterKeyword}?s=${sessionKey}&text=${encodeURIComponent(msg)}`);
                 const data = await response.json();
-                if(data.status) {
+                if (data.status) {
                     appendMessage('ai', data.result);
                 } else {
-                    appendMessage('ai', "Error API.");
+                    appendMessage('ai', "Sistem Error.");
                 }
             } catch (e) {
-                appendMessage('ai', "Koneksi Gagal.");
+                appendMessage('ai', "Gagal terhubung ke API.");
             }
         }
 
         document.getElementById('user-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') sendMessage();
+            if (e.key === 'Enter') sendMessage();
         });
     </script>
 </body>
