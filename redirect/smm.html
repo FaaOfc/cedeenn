@@ -3,261 +3,193 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InstaBoost Premium | Dark Edition</title>
+    <title>InstaBoost Pro | Premium Dark Panel</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --insta-gradient: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
+
         body { 
             font-family: 'Plus Jakarta Sans', sans-serif; 
             background-color: #050505; 
             color: #ffffff;
             background-image: radial-gradient(circle at top right, #2d1b4e, transparent), radial-gradient(circle at bottom left, #1a1a1a, transparent);
         }
+
+        /* --- UI Components --- */
         .insta-text-gradient {
             background: var(--insta-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
+
         .insta-bg-gradient { background: var(--insta-gradient); }
+
         .glass { 
-            background: rgba(255, 255, 255, 0.03); 
+            background: var(--glass); 
             backdrop-filter: blur(15px); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
+            border: 1px solid var(--glass-border); 
         }
+
         .form-input {
             background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
+            border: 1px solid var(--glass-border);
+            outline: none;
+            transition: 0.3s;
         }
-        .form-input:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 15px rgba(168, 85, 247, 0.2);
-        }
-        /* Remove arrows from number input */
-        input::-webkit-outer-spin-button, input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+        .form-input:focus { border-color: #a855f7; background: rgba(255, 255, 255, 0.08); }
+
         .btn-step {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
             transition: all 0.2s;
-            font-size: 0.7rem;
-            font-weight: 800;
+            cursor: pointer;
+            user-select: none;
         }
-        .btn-step:hover { background: #a855f7; color: white; }
+
+        .btn-step:active { transform: scale(0.9); background: #a855f7; }
+
+        .sidebar { transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        
+        input::-webkit-outer-spin-button, 
+        input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
     </style>
 </head>
 <body class="min-h-screen">
 
+    <div id="sidebar" class="sidebar fixed top-0 left-0 h-full w-72 bg-[#0a0a0a] z-[100] -translate-x-full border-r border-white/10 p-8 shadow-2xl">
+        <div class="flex items-center justify-between mb-10">
+            <span class="text-xl font-extrabold insta-text-gradient italic">MENU</span>
+            <button onclick="toggleSidebar()" class="text-gray-500 hover:text-white"><i class="fa-solid fa-xmark text-2xl"></i></button>
+        </div>
+        <nav class="space-y-4">
+            <a href="#" class="flex items-center gap-4 text-purple-400 font-bold p-4 glass rounded-2xl"><i class="fa-brands fa-instagram"></i> Instagram</a>
+            <a href="#" class="flex items-center gap-4 text-gray-400 p-4 hover:text-white transition pl-6"><i class="fa-brands fa-tiktok"></i> TikTok</a>
+        </nav>
+    </div>
+
     <header class="p-6 max-w-5xl mx-auto flex justify-between items-center sticky top-0 z-30 bg-[#050505]/80 backdrop-blur-md">
-        <button onclick="toggleSidebar()" class="w-10 h-10 flex items-center justify-center rounded-xl glass hover:bg-white/10 transition">
-            <i class="fa-solid fa-bars-staggered"></i>
+        <button onclick="toggleSidebar()" class="w-12 h-12 flex items-center justify-center rounded-2xl glass hover:bg-white/10 transition">
+            <i class="fa-solid fa-bars-staggered text-xl text-purple-500"></i>
         </button>
         <div class="text-center">
-            <h1 class="text-2xl font-extrabold tracking-tighter italic">Insta<span class="insta-text-gradient">Boost</span></h1>
+            <h1 class="text-3xl font-black italic tracking-tighter">Insta<span class="insta-text-gradient">Boost</span></h1>
+            <p class="text-[9px] text-gray-500 uppercase tracking-[0.4em] font-bold">Premium Social Service</p>
         </div>
-        <div class="w-10"></div>
+        <div class="w-12"></div>
     </header>
 
-    <main class="max-w-4xl mx-auto p-6 space-y-8 pb-24">
+    <main class="max-w-4xl mx-auto p-6 space-y-10 pb-24">
         
-        <div class="grid gap-8">
-            
-            <div class="glass p-8 rounded-[2rem]">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold flex items-center gap-3">
-                        <i class="fa-solid fa-heart text-pink-500"></i> Likes
-                    </h3>
-                    <div class="flex bg-white/5 rounded-xl p-1">
-                        <button id="likeGlobalBtn" onclick="setLikeType('Global')" class="px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold transition-all">Global</button>
-                        <button id="likeIndoBtn" onclick="setLikeType('Indo')" class="px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold transition-all">Indo</button>
+        <section class="text-center space-y-4">
+            <h2 class="text-4xl font-black tracking-tight leading-tight">Dapatkan Engagement <br><span class="insta-text-gradient italic underline">Level Sultan.</span></h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-6">
+                <div class="glass p-4 rounded-3xl"><i class="fa-solid fa-bolt text-purple-500 mb-2"></i><p class="text-[10px] font-bold uppercase">Fast</p></div>
+                <div class="glass p-4 rounded-3xl"><i class="fa-solid fa-tag text-pink-500 mb-2"></i><p class="text-[10px] font-bold uppercase">Cheap</p></div>
+                <div class="glass p-4 rounded-3xl"><i class="fa-solid fa-sliders text-orange-500 mb-2"></i><p class="text-[10px] font-bold uppercase">Custom</p></div>
+            </div>
+        </section>
+
+        <div class="space-y-8">
+            <div class="glass p-6 md:p-8 rounded-[2.5rem]">
+                <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+                    <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-heart text-pink-500"></i> Likes</h3>
+                    <div class="flex bg-white/5 rounded-2xl p-1 border border-white/5">
+                        <button id="likeGlobalBtn" onclick="setLikeType('Global')" class="px-6 py-2 rounded-xl bg-purple-600 font-bold text-xs shadow-lg">GLOBAL</button>
+                        <button id="likeIndoBtn" onclick="setLikeType('Indo')" class="px-6 py-2 rounded-xl text-gray-500 font-bold text-xs">INDO</button>
                     </div>
                 </div>
-                
                 <div class="space-y-4">
                     <div class="flex items-center gap-2">
-                        <button onclick="adjust('likeQty', -1000)" class="btn-step w-12 h-12 rounded-xl">-1k</button>
-                        <button onclick="adjust('likeQty', -100)" class="btn-step w-12 h-12 rounded-xl">-100</button>
-                        <input type="number" id="likeQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-12 rounded-xl text-center font-bold text-lg outline-none">
-                        <button onclick="adjust('likeQty', 100)" class="btn-step w-12 h-12 rounded-xl">+100</button>
-                        <button onclick="adjust('likeQty', 1000)" class="btn-step w-12 h-12 rounded-xl">+1k</button>
+                        <button onclick="adjust('likeQty', -1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-1k</button>
+                        <button onclick="adjust('likeQty', -100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-100</button>
+                        <input type="number" id="likeQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-14 rounded-2xl text-center font-black text-xl">
+                        <button onclick="adjust('likeQty', 100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+100</button>
+                        <button onclick="adjust('likeQty', 1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+1k</button>
                     </div>
-                    <input type="text" id="likeUrl" placeholder="https://instagram.com/p/..." class="form-input w-full p-4 rounded-xl outline-none text-sm">
-                    <p class="text-right text-sm text-gray-400 font-bold italic">Harga : <span class="text-white" id="priceDisplayLike">Rp 0</span></p>
+                    <input type="text" id="likeUrl" placeholder="https://instagram.com/p/..." class="form-input w-full p-4 rounded-2xl text-sm font-medium">
+                    <p class="text-right text-xs font-bold text-gray-500">Harga: <span id="priceDisplayLike" class="text-white text-base ml-1">Rp 0</span></p>
                 </div>
             </div>
 
-            <div class="glass p-8 rounded-[2rem]">
-                <h3 class="text-xl font-bold flex items-center gap-3 mb-6">
-                    <i class="fa-solid fa-play text-blue-500"></i> Views
-                </h3>
+            <div class="glass p-6 md:p-8 rounded-[2.5rem]">
+                <h3 class="text-xl font-bold flex items-center gap-3 mb-6"><i class="fa-solid fa-play text-blue-500"></i> Views</h3>
                 <div class="space-y-4">
                     <div class="flex items-center gap-2">
-                        <button onclick="adjust('viewQty', -1000)" class="btn-step w-12 h-12 rounded-xl">-1k</button>
-                        <button onclick="adjust('viewQty', -100)" class="btn-step w-12 h-12 rounded-xl">-100</button>
-                        <input type="number" id="viewQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-12 rounded-xl text-center font-bold text-lg outline-none">
-                        <button onclick="adjust('viewQty', 100)" class="btn-step w-12 h-12 rounded-xl">+100</button>
-                        <button onclick="adjust('viewQty', 1000)" class="btn-step w-12 h-12 rounded-xl">+1k</button>
+                        <button onclick="adjust('viewQty', -1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-1k</button>
+                        <button onclick="adjust('viewQty', -100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-100</button>
+                        <input type="number" id="viewQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-14 rounded-2xl text-center font-black text-xl">
+                        <button onclick="adjust('viewQty', 100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+100</button>
+                        <button onclick="adjust('viewQty', 1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+1k</button>
                     </div>
-                    <input type="text" id="viewUrl" placeholder="https://instagram.com/reel/..." class="form-input w-full p-4 rounded-xl outline-none text-sm">
-                    <p class="text-right text-sm text-gray-400 font-bold italic">Harga : <span class="text-white" id="priceDisplayView">Rp 0</span></p>
+                    <input type="text" id="viewUrl" placeholder="https://instagram.com/reel/..." class="form-input w-full p-4 rounded-2xl text-sm font-medium">
+                    <p class="text-right text-xs font-bold text-gray-500">Harga: <span id="priceDisplayView" class="text-white text-base ml-1">Rp 0</span></p>
                 </div>
             </div>
 
-            <div class="glass p-8 rounded-[2rem]">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-xl font-bold flex items-center gap-3">
-                        <i class="fa-solid fa-user-plus text-orange-500"></i> Followers
-                    </h3>
-                    <div class="flex bg-white/5 rounded-xl p-1">
-                        <button id="follGlobalBtn" onclick="setFollType('Global')" class="px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold transition-all">Global</button>
-                        <button id="follIndoBtn" onclick="setFollType('Indo')" class="px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold transition-all">Indo</button>
+            <div class="glass p-6 md:p-8 rounded-[2.5rem]">
+                <div class="flex flex-col md:flex-row justify-between gap-4 mb-6">
+                    <h3 class="text-xl font-bold flex items-center gap-3"><i class="fa-solid fa-user-plus text-orange-500"></i> Followers</h3>
+                    <div class="flex bg-white/5 rounded-2xl p-1 border border-white/5">
+                        <button id="follGlobalBtn" onclick="setFollType('Global')" class="px-6 py-2 rounded-xl bg-purple-600 font-bold text-xs shadow-lg">GLOBAL</button>
+                        <button id="follIndoBtn" onclick="setFollType('Indo')" class="px-6 py-2 rounded-xl text-gray-500 font-bold text-xs">INDO</button>
                     </div>
                 </div>
                 <div class="space-y-4">
                     <div class="flex items-center gap-2">
-                        <button onclick="adjust('follQty', -1000)" class="btn-step w-12 h-12 rounded-xl">-1k</button>
-                        <button onclick="adjust('follQty', -100)" class="btn-step w-12 h-12 rounded-xl">-100</button>
-                        <input type="number" id="follQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-12 rounded-xl text-center font-bold text-lg outline-none">
-                        <button onclick="adjust('follQty', 100)" class="btn-step w-12 h-12 rounded-xl">+100</button>
-                        <button onclick="adjust('follQty', 1000)" class="btn-step w-12 h-12 rounded-xl">+1k</button>
+                        <button onclick="adjust('follQty', -1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-1k</button>
+                        <button onclick="adjust('follQty', -100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">-100</button>
+                        <input type="number" id="follQty" oninput="calculate()" placeholder="min. 100" class="form-input flex-1 h-14 rounded-2xl text-center font-black text-xl">
+                        <button onclick="adjust('follQty', 100)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+100</button>
+                        <button onclick="adjust('follQty', 1000)" class="btn-step w-12 h-12 rounded-xl font-bold text-[10px]">+1k</button>
                     </div>
-                    <input type="text" id="follUrl" placeholder="https://instagram.com/@xxxx" class="form-input w-full p-4 rounded-xl outline-none text-sm">
-                    <p class="text-right text-sm text-gray-400 font-bold italic">Harga : <span class="text-white" id="priceDisplayFoll">Rp 0</span></p>
+                    <input type="text" id="follUrl" placeholder="https://instagram.com/@xxxx" class="form-input w-full p-4 rounded-2xl text-sm font-medium">
+                    <p class="text-right text-xs font-bold text-gray-500">Harga: <span id="priceDisplayFoll" class="text-white text-base ml-1">Rp 0</span></p>
                 </div>
             </div>
         </div>
 
-        <section class="glass p-8 rounded-[2.5rem] border-t-4 border-purple-500">
-            <h2 class="text-xl font-black mb-6 italic">Total Pesanan</h2>
-            <div class="space-y-3 text-sm">
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Like (<span id="txtLikeType">Global</span>)</span>
-                    <span id="resLike" class="font-bold">Rp 0</span>
-                </div>
-                <div class="flex justify-between">
-                    <span class="text-gray-400">Views</span>
-                    <span id="resView" class="font-bold">Rp 0</span>
-                </div>
-                <div class="flex justify-between border-b border-white/10 pb-3">
-                    <span class="text-gray-400">Followers (<span id="txtFollType">Global</span>)</span>
-                    <span id="resFoll" class="font-bold">Rp 0</span>
-                </div>
-                <div class="flex justify-between items-center pt-2">
-                    <span class="text-lg font-bold">Total</span>
-                    <span id="grandTotal" class="text-2xl font-black insta-text-gradient">Rp 0</span>
-                </div>
+        <section class="glass p-8 rounded-[3rem] border-l-8 border-purple-500">
+            <h2 class="text-xl font-black italic mb-6">RINGKASAN PESANAN</h2>
+            <div class="space-y-3 text-sm border-b border-white/5 pb-6">
+                <div class="flex justify-between"><span class="text-gray-400">Likes (<span id="txtLikeType">Global</span>)</span><span id="resLike">Rp 0</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Views</span><span id="resView">Rp 0</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Followers (<span id="txtFollType">Global</span>)</span><span id="resFoll">Rp 0</span></div>
             </div>
-            <button onclick="openModal()" class="w-full mt-8 insta-bg-gradient py-4 rounded-2xl font-black text-white shadow-xl hover:opacity-90 transition-all">
-                KONFIRMASI PESANAN
-            </button>
+            <div class="flex justify-between items-end pt-6">
+                <div>
+                    <p class="text-[10px] font-black text-purple-400 uppercase tracking-widest">Grand Total</p>
+                    <p id="grandTotal" class="text-4xl font-black text-white italic">Rp 0</p>
+                </div>
+                <button onclick="openModal()" class="insta-bg-gradient px-8 py-4 rounded-2xl font-black text-white shadow-xl hover:scale-105 active:scale-95 transition-all text-xs">
+                    KONFIRMASI
+                </button>
+            </div>
         </section>
     </main>
 
-    <div id="modal" class="fixed inset-0 bg-black/90 hidden flex items-center justify-center p-4 z-[100] backdrop-blur-md">
-        <div class="glass p-8 rounded-[2rem] max-w-md w-full border border-white/10 text-center">
-            <h3 class="text-xl font-black mb-4 tracking-tighter">ORDER PREVIEW</h3>
-            <div id="waPreview" class="text-[10px] text-left bg-black/50 p-4 rounded-xl mb-6 font-mono text-gray-400 border border-white/5 whitespace-pre-wrap"></div>
-            
-            <div class="flex bg-white/5 rounded-xl p-1 mb-6 border border-white/5">
-                <button id="qrisBtn" onclick="setPayment('QRIS')" class="flex-1 py-2 rounded-lg bg-purple-600 font-bold text-xs">QRIS</button>
-                <button id="ewalletBtn" onclick="setPayment('E-Wallet')" class="flex-1 py-2 rounded-lg text-gray-400 font-bold text-xs">E-Wallet</button>
+    <div id="modal" class="fixed inset-0 bg-black/95 hidden flex items-center justify-center p-4 z-[200] backdrop-blur-md">
+        <div class="glass p-8 rounded-[2.5rem] max-w-md w-full border border-white/10">
+            <h3 class="text-center font-black mb-6">PREVIEW PESANAN</h3>
+            <div id="waPreview" class="text-[10px] bg-black/50 p-4 rounded-2xl mb-6 font-mono text-gray-400 border border-white/5 whitespace-pre-wrap"></div>
+            <div class="flex bg-white/5 rounded-2xl p-1 mb-6">
+                <button id="qrisBtn" onclick="setPayment('QRIS')" class="flex-1 py-2 rounded-xl bg-purple-600 font-bold text-xs transition-all">QRIS</button>
+                <button id="ewalletBtn" onclick="setPayment('E-Wallet')" class="flex-1 py-2 rounded-xl text-gray-500 font-bold text-xs transition-all">E-Wallet</button>
             </div>
-
-            <div id="paymentContent" class="mb-6 flex justify-center"></div>
-
-            <div class="grid grid-cols-2 gap-4">
-                <button onclick="closeModal()" class="py-3 text-gray-500 font-bold text-sm">BATAL</button>
-                <button onclick="sendWA()" class="py-3 bg-green-500 rounded-xl font-black text-white shadow-lg text-sm">KIRIM WA</button>
+            <div id="paymentContent" class="flex justify-center min-h-[140px] items-center"></div>
+            <div class="grid grid-cols-2 gap-4 mt-6">
+                <button onclick="closeModal()" class="py-4 text-gray-500 font-bold text-sm">BATAL</button>
+                <button onclick="sendWA()" class="py-4 bg-green-500 rounded-2xl font-black text-white shadow-lg text-sm">KIRIM WA</button>
             </div>
         </div>
     </div>
 
-    <script>
-        let likeType = 'Global';
-        let follType = 'Global';
-        let paymentMethod = 'QRIS';
-        const rates = { likeIndo: 22, likeGlobal: 2.5, view: 0.15, follIndo: 60, follGlobal: 8 };
-
-        function adjust(id, amount) {
-            const input = document.getElementById(id);
-            let val = parseInt(input.value) || 0;
-            val = Math.max(0, val + amount);
-            input.value = val;
-            calculate();
-        }
-
-        function setLikeType(type) {
-            likeType = type;
-            document.getElementById('likeGlobalBtn').className = type === 'Global' ? 'px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold' : 'px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold';
-            document.getElementById('likeIndoBtn').className = type === 'Indo' ? 'px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold' : 'px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold';
-            document.getElementById('txtLikeType').innerText = type;
-            calculate();
-        }
-
-        function setFollType(type) {
-            follType = type;
-            document.getElementById('follGlobalBtn').className = type === 'Global' ? 'px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold' : 'px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold';
-            document.getElementById('follIndoBtn').className = type === 'Indo' ? 'px-4 py-1.5 rounded-lg bg-purple-600 text-xs font-bold' : 'px-4 py-1.5 rounded-lg text-gray-400 text-xs font-bold';
-            document.getElementById('txtFollType').innerText = type;
-            calculate();
-        }
-
-        function calculate() {
-            const lQty = parseInt(document.getElementById('likeQty').value) || 0;
-            const vQty = parseInt(document.getElementById('viewQty').value) || 0;
-            const fQty = parseInt(document.getElementById('follQty').value) || 0;
-
-            const lp = lQty * (likeType === 'Indo' ? rates.likeIndo : rates.likeGlobal);
-            const vp = vQty * rates.view;
-            const fp = fQty * (follType === 'Indo' ? rates.follIndo : rates.follGlobal);
-
-            // Update individual displays
-            document.getElementById('priceDisplayLike').innerText = `Rp ${lp.toLocaleString('id-ID')}`;
-            document.getElementById('priceDisplayView').innerText = `Rp ${vp.toLocaleString('id-ID')}`;
-            document.getElementById('priceDisplayFoll').innerText = `Rp ${fp.toLocaleString('id-ID')}`;
-
-            // Update summary
-            document.getElementById('resLike').innerText = `Rp ${lp.toLocaleString('id-ID')}`;
-            document.getElementById('resView').innerText = `Rp ${vp.toLocaleString('id-ID')}`;
-            document.getElementById('resFoll').innerText = `Rp ${fp.toLocaleString('id-ID')}`;
-            
-            const total = lp + vp + fp;
-            document.getElementById('grandTotal').innerText = `Rp ${total.toLocaleString('id-ID')}`;
-        }
-
-        function setPayment(method) {
-            paymentMethod = method;
-            document.getElementById('qrisBtn').className = method === 'QRIS' ? 'flex-1 py-2 rounded-lg bg-purple-600 font-bold text-xs' : 'flex-1 py-2 rounded-lg text-gray-400 font-bold text-xs';
-            document.getElementById('ewalletBtn').className = method === 'E-Wallet' ? 'flex-1 py-2 rounded-lg bg-purple-600 font-bold text-xs' : 'flex-1 py-2 rounded-lg text-gray-400 font-bold text-xs';
-            
-            const content = document.getElementById('paymentContent');
-            if(method === 'QRIS') {
-                content.innerHTML = `<div class="bg-white p-2 rounded-xl"><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=CONTOH_QRIS" class="w-24 h-24"></div>`;
-            } else {
-                content.innerHTML = `<div class="text-[12px]"><p>DANA/GOPAY:</p><p class="text-xl font-black">08812345678</p></div>`;
-            }
-        }
-
-        function openModal() {
-            const now = new Date();
-            const date = now.toLocaleDateString('id-ID');
-            const time = now.toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'}) + " WIB";
-            
-            const text = `Tanggal : ${date}\nWaktu : ${time}\n\nPesanan:\n- Like (${likeType}) : ${document.getElementById('likeQty').value || 0} - ${document.getElementById('resLike').innerText}\n- Views : ${document.getElementById('viewQty').value || 0} - ${document.getElementById('resView').innerText}\n- Followers (${follType}) : ${document.getElementById('follQty').value || 0} - ${document.getElementById('resFoll').innerText}\n\nTotal:\n- ${document.getElementById('grandTotal').innerText}\n\nKonfirmasi Pembayaran:\nMetode : ${paymentMethod}`;
-            
-            document.getElementById('waPreview').innerText = text;
-            setPayment('QRIS');
-            document.getElementById('modal').classList.remove('hidden');
-        }
-
-        function closeModal() { document.getElementById('modal').classList.add('hidden'); }
-
-        function sendWA() {
-            const text = encodeURIComponent(document.getElementById('waPreview').innerText);
-            window.open(`https://wa.me/62895404774374?text=${text}`);
-        }
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
