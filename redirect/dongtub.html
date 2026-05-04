@@ -2,65 +2,119 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<title>File Manager</title>
+<title>Faanrky File Manager</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body {
-  font-family: Arial;
-  background: #0f0f0f;
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #0f172a, #020617);
   color: white;
+}
+
+.container {
+  max-width: 900px;
+  margin: auto;
   padding: 20px;
 }
-.box {
-  background: #1a1a1a;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
 }
+
+.card {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
 button {
-  padding: 6px 10px;
-  margin: 3px;
+  background: #6366f1;
+  border: none;
+  color: white;
+  padding: 8px 12px;
+  border-radius: 8px;
   cursor: pointer;
 }
-input {
-  margin: 5px 0;
+
+button:hover {
+  background: #4f46e5;
 }
+
 .file {
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
   padding: 10px 0;
+}
+
+.actions button {
+  margin-right: 5px;
+}
+
+.status {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #38bdf8;
+}
+
+.error {
+  color: #f87171;
 }
 </style>
 </head>
+
 <body>
+<div class="container">
 
-<h2>📂 File Manager (Dongtube API)</h2>
+<h1>📂 Faanrky File Manager</h1>
 
-<div class="box">
-  <h3>Upload File</h3>
-  <input type="file" id="fileInput"><br>
+<div class="card">
+  <h3>📤 Upload File</h3>
+  <input type="file" id="fileInput"><br><br>
+
   <label>
     <input type="checkbox" id="isPublic" checked> Public
-  </label><br>
+  </label><br><br>
+
   <button onclick="upload()">Upload</button>
+  <div class="status" id="uploadStatus"></div>
 </div>
 
-<div class="box">
-  <h3>Daftar File</h3>
-  <button onclick="loadFiles()">Refresh</button>
+<div class="card">
+  <h3>📋 Daftar File</h3>
+  <button onclick="loadFiles()">🔄 Refresh</button>
   <div id="fileList"></div>
+  <div class="status" id="listStatus"></div>
+</div>
+
 </div>
 
 <script>
 const API_KEY = "dtdb_4f57d86f08947f0e95d63adc43fd4425c1644e379cf88869c6dbde53f10ae6c5";
+  
+function setStatus(id, text, isError=false) {
+  const el = document.getElementById(id);
+  el.innerText = text;
+  el.className = "status " + (isError ? "error" : "");
+}
 
 function upload() {
   const fileInput = document.getElementById("fileInput");
   const isPublic = document.getElementById("isPublic").checked;
 
-  if (!fileInput.files[0]) return alert("Pilih file dulu!");
+  if (!fileInput.files[0]) {
+    return setStatus("uploadStatus", "Pilih file dulu!", true);
+  }
 
   const form = new FormData();
   form.append("file", fileInput.files[0]);
   form.append("public", isPublic ? "true" : "false");
+
+  setStatus("uploadStatus", "Uploading...");
 
   fetch("https://dongtube.my.id/api/upload", {
     method: "POST",
@@ -69,13 +123,19 @@ function upload() {
   })
   .then(res => res.json())
   .then(data => {
-    alert("Upload berhasil!");
+    setStatus("uploadStatus", "✅ Upload berhasil!");
     loadFiles();
     console.log(data);
+  })
+  .catch(err => {
+    setStatus("uploadStatus", "❌ Upload gagal", true);
+    console.error(err);
   });
 }
 
 function loadFiles() {
+  setStatus("listStatus", "Loading...");
+
   fetch("https://dongtube.my.id/api/files", {
     headers: { "X-API-Key": API_KEY }
   })
@@ -84,43 +144,39 @@ function loadFiles() {
     const list = document.getElementById("fileList");
     list.innerHTML = "";
 
+    if (!Array.isArray(files)) {
+      setStatus("listStatus", "❌ Response bukan array", true);
+      console.log(files);
+      return;
+    }
+
+    if (files.length === 0) {
+      setStatus("listStatus", "Belum ada file");
+      return;
+    }
+
     files.forEach(file => {
       const div = document.createElement("div");
       div.className = "file";
 
       div.innerHTML = `
-        <b>${file.name}</b><br>
+        <b>${file.name || "No Name"}</b><br>
         ID: ${file.id}<br>
-        <button onclick="copyLink('${file.url}')">Copy Link</button>
-        <button onclick="deleteFile('${file.id}')">Delete</button>
+        <div class="actions">
+          <button onclick="copyLink('${file.url}')">🔗 Copy</button>
+          <button onclick="deleteFile('${file.id}')">🗑️ Delete</button>
+        </div>
       `;
 
       list.appendChild(div);
     });
-  });
-}
 
-function deleteFile(id) {
-  if (!confirm("Yakin mau hapus?")) return;
-
-  fetch(`https://dongtube.my.id/api/files/${id}`, {
-    method: "DELETE",
-    headers: { "X-API-Key": API_KEY }
+    setStatus("listStatus", "✅ Loaded");
   })
-  .then(() => {
-    alert("File dihapus!");
-    loadFiles();
+  .catch(err => {
+    setStatus("listStatus", "❌ Gagal load list", true);
+    console.error(err);
   });
 }
 
-function copyLink(url) {
-  navigator.clipboard.writeText(url);
-  alert("Link disalin!");
-}
-
-// auto load saat buka
-loadFiles();
-</script>
-
-</body>
-</html>
+function
